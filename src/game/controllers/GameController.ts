@@ -52,9 +52,10 @@ export class GameController implements Controller {
             // top menu bar
             case MenuButtonName.ACHIEVEMENTS: this.switchView(ViewName.ACHIEVEMENTS); break;
             case MenuButtonName.INVENTORY: this.switchView(ViewName.INVENTORY); break;
+            case MenuButtonName.WORLD_MAP: this.switchView(ViewName.WORLD_MAP); break;
             case MenuButtonName.MAIN_MENU: this.switchView(ViewName.MAIN_MENU); break;
             case MenuButtonName.GAME: this.switchView(ViewName.GAME); break;
-            // main menu
+            default: console.log("Unknown menu item selected: " + item.name); break;
         }
     }
 
@@ -64,56 +65,46 @@ export class GameController implements Controller {
      */
     public switchView(name: ViewName) {
         this.game.model.active_view = name;
-        this.hideSubViewButtons();
+        this.hideAllSubViewButtons();
         switch (name) {
             case ViewName.ACHIEVEMENTS:
-                this.showAchievementsButtons();
+                this.showSubViewButtons([]);
                 break;
             case ViewName.INVENTORY:
-                this.showInventoryButtons();
+                this.showSubViewButtons([]);
                 break;
             case ViewName.MAIN_MENU:
-                this.showMainMenuButtons();
+                this.showSubViewButtons(main_menu_button_names);
+                break;
+            case ViewName.WORLD_MAP:
+                this.showSubViewButtons([]);
                 break;
             case ViewName.GAME:
+                this.showSubViewButtons([]);
                 break;
         }
     }
 
     /**
-     * 
+     * Hide all buttons except the top menu bar
      */
-    public hideSubViewButtons() {
+    public hideAllSubViewButtons() {
         const active = top_menu_button_names;
         this.game.model.buttons.forEach((button) => {
             button.is_visible = active.includes(button.name as MenuButtonName);
         });
     }
 
-    public showMainMenuButtons() {
-        const activate = main_menu_button_names;
+    /**
+     * Show the buttons with the given names
+     * @param buttons 
+     */
+    public showSubViewButtons(buttons: Array<MenuButtonName>) {
         this.game.model.buttons.forEach((button) => {
-            if (activate.includes(button.name as MenuButtonName)) {
+            if (buttons.includes(button.name as MenuButtonName)) {
                 button.is_visible = true;
             }
         });
     }
 
-    public showAchievementsButtons() {
-        const activate: Array<string> = [];
-        this.game.model.buttons.forEach((button) => {
-            if (activate.includes(button.name as MenuButtonName)) {
-                button.is_visible = true;
-            }
-        });
-    }
-
-    public showInventoryButtons() {
-        const activate: Array<string> = [];
-        this.game.model.buttons.forEach((button) => {
-            if (activate.includes(button.name as MenuButtonName)) {
-                button.is_visible = true;
-            }
-        });
-    }
 }

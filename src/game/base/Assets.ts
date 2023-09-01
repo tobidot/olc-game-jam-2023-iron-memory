@@ -1,13 +1,29 @@
 import { AssetManager } from "../../library";
-import player from "../../../assets/images/player.png";
-import obstacle from "../../../assets/images/obstacle.png";
-import enemy from "../../../assets/images/enemy.png";
+// area
+import player from "../../../assets/images/area/player.png";
+import obstacle from "../../../assets/images/area/obstacle.png";
+import enemy from "../../../assets/images/area/enemy.png";
+// world_map
+import dungeon from "../../../assets/images/world_map/dungeon.png";
+import forrest from "../../../assets/images/world_map/forrest.png";
+import gras from "../../../assets/images/world_map/gras.png";
+import mountain from "../../../assets/images/world_map/mountain.png";
+import village from "../../../assets/images/world_map/village.png";
 
 export const Assets = {
     images: {
-        player, 
-        obstacle,
-        enemy,
+        area: {
+            player,
+            obstacle,
+            enemy,
+        },
+        world_map: {
+            dungeon,
+            mountain,
+            forrest,
+            gras,
+            village,
+        },
     },
     sounds: {
     },
@@ -17,13 +33,26 @@ export const Assets = {
 
 export function registerAssets(asset_manager: AssetManager) {
     // Register images
-    for( let key in Assets.images) {
-        asset_manager.addImage(Assets.images[key], Assets.images[key]);
-    };
-    for( let key in Assets.sounds) {
-        asset_manager.addSound(Assets.sounds[key], Assets.sounds[key]);
-    };
-    for( let key in Assets.musics) {
-        asset_manager.addMusic(Assets.musics[key], Assets.musics[key]);
-    };
+    forEveryString(Assets.images, (key, value) => {
+        asset_manager.addImage(value, value);
+    });
+    forEveryString(Assets.sounds, (key, value) => {
+        asset_manager.addSound(value, value);
+    });
+    forEveryString(Assets.musics, (key, value) => {
+        asset_manager.addMusic(value, value);
+    });
+}
+
+type StringMap = { [key: string]: string | string[] | StringMap };
+
+function forEveryString(object: StringMap|Array<string>, callback: (key: string, value: string) => void) {
+    for (let key in object) {
+        let value = object[key];
+        if (typeof value === "string") {
+            callback(key, value);
+            continue;
+        }
+        forEveryString(value, callback);
+    }
 }

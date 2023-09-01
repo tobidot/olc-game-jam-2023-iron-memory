@@ -1,6 +1,5 @@
+import { WeaponAchievement } from "../consts/WeaponAchievements";
+
 export class StoryProgression {
-    public flags = {
-        introduction: false,
-        first_death: false,
-    } as const;
+    public achievements: Map<WeaponAchievement, number> = new Map();
 }

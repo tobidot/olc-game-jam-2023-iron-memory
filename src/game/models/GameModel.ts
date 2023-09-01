@@ -6,18 +6,21 @@ import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 import { HeroUnitFactory } from "../factories/HeroUnitFactory";
 import { WalkableArea } from "./WalkableArea";
+import { WorldMap } from "./WorldMap";
 
 export class GameModel implements tgt.Model {
     public active_view: ViewName = ViewName.MAIN_MENU;
+    public screen_resolution: Vector2D = new Vector2D(800, 600);
     // 
     public buttons: Array<MenuButtonModel> = [];
     //
     public walkable_area = new WalkableArea();
+    public world_map = new WorldMap();
     // factories
     public hero_factory: HeroUnitFactory;
 
     public constructor(
-        protected readonly game: Game,
+        public readonly game: Game,
         context: CanvasRenderingContext2D,
     ) {
         this.buttons = this.createMenu(context);
@@ -46,11 +49,12 @@ export class GameModel implements tgt.Model {
         const top_menu = [
             button_generator.set("x", 10).set("y", 5).make(MenuButtonName.INVENTORY, "Inventory"),
             button_generator.set("x", 210).set("y", 5).make(MenuButtonName.ACHIEVEMENTS, "Achievements"),
+            button_generator.set("x", 410).set("y", 5).make(MenuButtonName.WORLD_MAP, "World Map"),
             button_generator.set("x", 610).set("y", 5).set('width', 140).make(MenuButtonName.MAIN_MENU, "Menu"),
             button_generator.set("x", 770).set("y", 5).set('width', 20).make(MenuButtonName.GAME, "X"),
         ];
         // main menu
-        button_generator.set("width", 180)
+        button_generator.set("width", 200)
         const main_menu = [
             button_generator.set("x", 300).set("y", 135).make(MenuButtonName.NEW_GAME, "New Game"),
             button_generator.set("x", 300).set("y", 165).make(MenuButtonName.TOGGLE_MUSIC, "Toggle Music"),

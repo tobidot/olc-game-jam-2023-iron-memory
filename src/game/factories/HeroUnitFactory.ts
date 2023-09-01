@@ -40,6 +40,6 @@ export class HeroUnitFactory {
 
 const image_sets = {
     swordsman: [
-        [AgentImageName.DEFAULT, Assets.images.player],
+        [AgentImageName.DEFAULT, Assets.images.area.player],
     ],
 } as const;
