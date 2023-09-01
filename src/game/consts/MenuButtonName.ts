@@ -2,7 +2,8 @@ export enum MenuButtonName {
     // TOP MENU
     ACHIEVEMENTS = "achievements",
     INVENTORY = "inventory",
-    MENU = "menu",
+    MAIN_MENU = "menu",
+    GAME = "game",
     // Main Menu
     NEW_GAME = "new_game",
     TOGGLE_MUSIC = "toggle_music",
@@ -12,7 +13,8 @@ export enum MenuButtonName {
 export const top_menu_button_names = [
     MenuButtonName.ACHIEVEMENTS,
     MenuButtonName.INVENTORY,
-    MenuButtonName.MENU,
+    MenuButtonName.MAIN_MENU,
+    MenuButtonName.GAME,
 ];
 
 export const main_menu_button_names = [

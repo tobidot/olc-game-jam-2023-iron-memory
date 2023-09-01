@@ -45,5 +45,6 @@ export class Game extends tgt.GameTemplate<
         resolve: () => void,
         reject: (reason?: any) => void
     ): void {
+        this.model.reset();
     }
 }

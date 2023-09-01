@@ -1,7 +1,13 @@
 import { AssetManager } from "../../library";
+import player from "../../../assets/images/player.png";
+import obstacle from "../../../assets/images/obstacle.png";
+import enemy from "../../../assets/images/enemy.png";
 
 export const Assets = {
     images: {
+        player, 
+        obstacle,
+        enemy,
     },
     sounds: {
     },
