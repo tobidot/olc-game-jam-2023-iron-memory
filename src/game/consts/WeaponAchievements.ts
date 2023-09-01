@@ -8,7 +8,6 @@ export interface WeaponAchievementDescription {
     id: WeaponAchievement;
     label: string;
     description: string;
-    progress: number;
 }
 
 function make(
@@ -18,7 +17,6 @@ function make(
     return [
         description.id,
         Object.assign({
-            progress: 0,
         }, description)
     ];
 }
