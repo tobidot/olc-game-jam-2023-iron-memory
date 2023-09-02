@@ -72,6 +72,7 @@ export class GameModel implements tgt.Model {
     public reset() {
         this.walkable_area.clear();
         this.walkable_area.addEntity(this.hero_factory.makeSwordsman(new Vector2D(400,300)));
+        this.world_map.generateWorld();
     }
 
     public update(delta_seconds: number): void {

@@ -1,11 +1,11 @@
-import { GameBaseController, MenuModel, MouseUpEvent } from "../../library";
+import { GameBaseController, KeyName, KeyUpEvent, KeyboardController, MenuModel, MouseUpEvent } from "../../library";
 import { Controller } from "../../library/abstract/mvc/Controller";
 import { ControllerResponse } from "../../library/abstract/mvc/Response";
 import { Game } from "../base/Game";
 import { MenuButtonName, main_menu_button_names, top_menu_button_names } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 
-export class GameController implements Controller {
+export class GameController implements Controller, KeyboardController {
 
     public constructor(
         protected readonly game: Game,
@@ -17,7 +17,7 @@ export class GameController implements Controller {
      * Start a new game
      */
     public newGame(): ControllerResponse {
-
+        this.game.model.reset();
         return null;
     }
 
@@ -42,6 +42,19 @@ export class GameController implements Controller {
         });
     }
 
+    
+    public onKeyUp(event: KeyUpEvent): void {
+        const is_control_down = this.game.keyboard.getKey(KeyName.Control);
+        switch (event.key.name) {
+            case KeyName.KeyO:
+                if (is_control_down) {
+                    // cheat reveal map
+                    this.game.model.world_map.areas.forEach((area) => { area.discovered = true; });
+                }
+                break;
+        }
+    }
+
     /**
      * Any button has been clicked
      * @param item 
@@ -55,6 +68,7 @@ export class GameController implements Controller {
             case MenuButtonName.WORLD_MAP: this.switchView(ViewName.WORLD_MAP); break;
             case MenuButtonName.MAIN_MENU: this.switchView(ViewName.MAIN_MENU); break;
             case MenuButtonName.GAME: this.switchView(ViewName.GAME); break;
+            case MenuButtonName.NEW_GAME: this.newGame(); break;
             default: console.log("Unknown menu item selected: " + item.name); break;
         }
     }
