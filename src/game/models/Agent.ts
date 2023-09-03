@@ -14,6 +14,11 @@ export enum AgentImageName {
 
 export type AgentImageSet = Map<AgentImageName, ImageAsset>;
 
+export interface ChannelAction {
+    delay_seconds: number;
+    callback: (agent: Agent) => void;
+}
+
 export class Agent extends Entity implements PhysicsProxiable, Physical {
     // 'static' game properties
     public is_dead: boolean = false;
@@ -25,6 +30,7 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
     public light_attack_delay: number = 0.5;
     public heavy_attack_delay: number = 1.0;
     public movement_speed: number = 100;
+    public channel: null | ChannelAction = null;
     // physics properties
     public physics: SatPhysicsProxy;
     public physics_id: number | null = null;
@@ -52,6 +58,13 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
     public update(delta_seconds: number): void {
         this.render_box.center.set(this.physics.shape.getCenter());
         this.attack_cooldown = Math.max(0, this.attack_cooldown - delta_seconds);
+        if (this.channel !== null) {
+            this.channel.delay_seconds -= delta_seconds;
+            if (this.channel.delay_seconds <= 0) {
+                this.channel.callback(this);
+                this.channel = null;
+            }
+        }
     }
 
     public onWorldCollision(distance: Vector2D): void {

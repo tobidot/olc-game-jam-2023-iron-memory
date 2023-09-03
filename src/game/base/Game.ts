@@ -91,6 +91,6 @@ export class Game extends tgt.GameTemplate<
             this.model.world_map.active_area_coordinate.x,
             this.model.world_map.active_area_coordinate.y
         );
-        this.controller.travelTo(starting_area, WorldMapAreaBorder.NORTH);
+        this.controller.travelTo(starting_area);
     }
 }

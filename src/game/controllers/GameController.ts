@@ -26,7 +26,7 @@ export class GameController extends BaseController {
             this.game.model.world_map.active_area_coordinate.x,
             this.game.model.world_map.active_area_coordinate.y
         );
-        this.travelTo(starting_area, WorldMapAreaBorder.NORTH);
+        this.travelTo(starting_area);
         return null;
     }
 
@@ -88,20 +88,24 @@ export class GameController extends BaseController {
 
     public travelTo(
         new_area: WorldMapArea,
-        from: WorldMapAreaBorder,
+        from: WorldMapAreaBorder | null = null,
     ) {
         const player = this.game.model.walkable_area.hero;
         assert(!!player, "No player unit");
         // reset the walkable area
         const walkable_area = this.game.model.walkable_area;
         // reset the player position to the opposie border of where he just traveld to
-        const offset = this.game.model.world_map.getBorderOffset(from);
-        const player_box = player.physics.shape.getOuterBox();
-        const new_position = new Vector2D(
-            offset.x * (walkable_area.area.size.x / 2 - player_box.width - 10) + walkable_area.area.center.x,
-            offset.y * (walkable_area.area.size.y / 2 - player_box.height - 10) + walkable_area.area.center.y,
-        );
-        player.physics.shape.setCenter(new_position);
+        if (from === null) {
+            player.physics.shape.setCenter(walkable_area.area.center);
+        } else {
+            const offset = this.game.model.world_map.getBorderOffset(from);
+            const player_box = player.physics.shape.getOuterBox();
+            const new_position = new Vector2D(
+                offset.x * (walkable_area.area.size.x / 2 - player_box.width - 10) + walkable_area.area.center.x,
+                offset.y * (walkable_area.area.size.y / 2 - player_box.height - 10) + walkable_area.area.center.y,
+            );
+            player.physics.shape.setCenter(new_position);
+        }
 
         // reset the walkable area
         walkable_area.clear();
