@@ -1,11 +1,15 @@
 import { KeyName, KeyUpEvent, MenuModel, MouseUpEvent, assert } from "../../library";
 import { ControllerResponse } from "../../library/abstract/mvc/Response";
 import { Vector2D } from "../../library/math";
+import { ConvexPolygone } from "../../library/math/ConvexPolygone";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
 import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 import { Agent } from "../models/Agent";
+import { AttackAttributes } from "../models/AttackAttributes";
+import { AttackDamage } from "../models/AttackDamage";
+import { Hero } from "../models/Hero";
 import { WorldMapArea } from "../models/WorldMap";
 import { BaseController } from "./BaseController";
 
@@ -66,6 +70,7 @@ export class GameController extends BaseController {
         assert(!!player, "No player unit");
         // do nothing if border is closed
         const active_coordinates = this.game.model.world_map.active_area_coordinate;
+        console.log(active_coordinates);
         const old_area = this.game.model.world_map.at(
             active_coordinates.x,
             active_coordinates.y
@@ -106,6 +111,17 @@ export class GameController extends BaseController {
             );
             player.physics.shape.setCenter(new_position);
         }
+        // update world position and discover new areas
+        this.game.model.world_map.active_area_coordinate.set(new_area.position);
+        new_area.open_borders.forEach((is_open, border) => {
+            if (!is_open) {
+                return ;
+            }
+            const position = this.game.model.world_map.getBorderPosition(new_area.position, border);
+            const area = this.game.model.world_map.at(position.x, position.y);
+            area.discovered = true;
+        });
+
 
         // reset the walkable area
         walkable_area.clear();
@@ -117,6 +133,118 @@ export class GameController extends BaseController {
             walkable_area.addEntity(entity);
         });
         console.log(new_area, walkable_area);
+    }
+
+    public playerUpdateMovement(): void {
+        const keys: Array<[KeyName, Vector2D]> = [
+            [KeyName.ArrowUp, Vector2D.UP],
+            [KeyName.KeyW, Vector2D.UP],
+            [KeyName.ArrowDown, Vector2D.DOWN],
+            [KeyName.KeyS, Vector2D.DOWN],
+            [KeyName.ArrowLeft, Vector2D.LEFT],
+            [KeyName.KeyA, Vector2D.LEFT],
+            [KeyName.ArrowRight, Vector2D.RIGHT],
+            [KeyName.KeyD, Vector2D.RIGHT],
+        ];
+        const movement = keys.map(([key, direction]) => {
+            if (this.game.keyboard.getKey(key).is_down) {
+                return direction;
+            }
+            return new Vector2D(0, 0);
+        }).reduce((sum: Vector2D, next: Vector2D): Vector2D => {
+            return sum.add(next);
+        }, new Vector2D(0, 0))
+        this.playerMove(movement);
+    }
+
+    public playerMove(direction: Vector2D) {
+        const player = this.game.model.walkable_area.hero;
+        if (!player || player.channel !== null) {
+            return;
+        }        
+        player.physics.velocity = direction.normalize().mul(100);
+    }
+
+    public lightAttack(agent: Agent, direction: Vector2D): void {
+        this.attack(
+            agent,
+            direction,
+            agent.getLightAttackStruct(),
+        );
+    }
+
+    public heavyAttack(agent: Agent, direction: Vector2D): void {
+        this.attack(
+            agent,
+            direction,
+            agent.getHeavyAttackStruct(),
+        );
+    }
+
+    public attack(
+        agent: Agent,
+        direction: Vector2D,
+        attack: AttackAttributes,
+    ) {
+        const { channel_seconds, attack_width, attack_range, damage, cooldown_seconds } = attack;
+        if (agent.channel !== null || agent.cooldown > 0) {
+            // still channeling
+            return;
+        }
+        if (channel_seconds > 0) {
+            agent.physics.velocity.set({ x: 0, y: 0 });
+            agent.channel = {
+                delay_seconds: channel_seconds,
+                callback: this.getAttackCallback(agent, direction, attack_width, attack_range, damage, cooldown_seconds),
+            };
+        } else {
+            this.getAttackCallback(agent, direction, attack_width, attack_range, damage, cooldown_seconds)(agent);
+        }
+    }
+
+    public getAttackCallback(
+        source: Agent,
+        direction: Vector2D,
+        attack_width: number,
+        attack_range: number,
+        damage: AttackDamage,
+        cooldown: number,
+    ) {
+        return (agent: Agent) => {
+            if (agent.is_dead) {
+                return;
+            }
+            // set the cooldown
+            source.cooldown = cooldown;
+
+            // add the visual effect
+            const player_center = source.physics.shape.getCenter();
+            const effect = this.game.model.effect_factory
+                .makeSlash(player_center.cpy(), attack_width, attack_range, direction);
+            this.game.model.walkable_area.entities.push(effect);
+
+            // apply damage to enemies
+            const direction_left = direction.cpy().rotate(Math.PI / 2).normalize();
+            const direction_right = direction.cpy().rotate(-Math.PI / 2).normalize();
+            const forward = direction.cpy().mul(attack_range);
+            const left = direction_left.cpy().mul(attack_width / 2);
+            const right = direction_right.cpy().mul(attack_width / 2);
+            const attack_shape = new ConvexPolygone([
+                player_center.cpy().add(left),
+                player_center.cpy().add(forward).add(left),
+                player_center.cpy().add(forward).add(right),
+                player_center.cpy().add(right),
+            ]);
+            // pick enemies in area
+            const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_shape)
+                .map((proxy) => proxy.reference)
+                .filter((entity): entity is Agent => entity instanceof Agent && entity.is_player !== agent.is_player);
+            enemies.forEach((enemy) => {
+                enemy.applyDamage(damage);
+            });
+
+            this.playerUpdateMovement();
+        }
     }
 
 }

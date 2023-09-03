@@ -7,6 +7,7 @@ import { SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
 import { Agent } from "./Agent";
+import { AttackDamage } from "./AttackDamage";
 import { Entity } from "./Entity";
 
 export enum AgentImageName {
@@ -48,5 +49,14 @@ export class Hero extends Agent {
 
     public onCollision(other: PhysicsProxy, collision: Collision): void {
         // do nothing
+    }
+
+    public onDeath() {
+        this.game.model.resetAfterDeath();
+        const starting_area = this.game.model.world_map.at(
+            Math.floor(this.game.model.world_map.size.x / 2),
+            Math.floor(this.game.model.world_map.size.y / 2),
+        );
+        this.game.controller.travelTo(starting_area);
     }
 }

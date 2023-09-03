@@ -5,6 +5,9 @@ import { Rect } from "../../library/math/Rect";
 import { Assets } from "../base/Assets";
 import { Game } from "../base/Game";
 import { Agent, AgentImageName, AgentImageSet } from "../models/Agent";
+import { AiAgent } from "../models/AiAgent";
+import { AttackAttributes } from "../models/AttackAttributes";
+import { AttackDamage } from "../models/AttackDamage";
 
 export class CreepUnitFactory {
 
@@ -18,7 +21,7 @@ export class CreepUnitFactory {
     ) {
         const size = 16;
         const shape = new Circle(position, size / 2);
-        const entity = new Agent(
+        const entity = new AiAgent(
             this.game,
             shape,
             this.getImageSet('goblin'),
@@ -27,6 +30,11 @@ export class CreepUnitFactory {
         entity.max_hitpoints = entity.hitpoints = 6;
         entity.movement_speed = 140;
         entity.hitpoints = 6;
+        entity.heavy_attack = entity.light_attack = new AttackAttributes(
+            new AttackDamage(entity, 4, 0, 0, 0),
+            32, 32, 0.3, 0
+        );
+        // entity.
         return entity;
     }
 

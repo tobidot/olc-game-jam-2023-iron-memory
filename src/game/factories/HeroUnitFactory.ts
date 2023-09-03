@@ -5,6 +5,8 @@ import { Rect } from "../../library/math/Rect";
 import { Assets } from "../base/Assets";
 import { Game } from "../base/Game";
 import { Agent, AgentImageName, AgentImageSet } from "../models/Agent";
+import { AttackAttributes } from "../models/AttackAttributes";
+import { AttackDamage } from "../models/AttackDamage";
 import { Hero } from "../models/Hero";
 
 export class HeroUnitFactory {
@@ -27,6 +29,15 @@ export class HeroUnitFactory {
         );
         entity.max_hitpoints = entity.hitpoints = 40;
         entity.movement_speed = 200;
+        
+        entity.light_attack = new AttackAttributes(
+            new AttackDamage(entity, 10, 0, 0, 0),
+            40, 100, 0.5, 0
+        );
+        entity.heavy_attack =  new AttackAttributes(
+            new AttackDamage(entity, 30, 0, 0, 0),
+            80, 80, 1.1, 0
+        );
         return entity;
     }
 

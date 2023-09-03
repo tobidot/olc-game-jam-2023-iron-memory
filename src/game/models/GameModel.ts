@@ -86,6 +86,12 @@ export class GameModel implements tgt.Model {
         this.world_map.generateWorld();
     }
 
+    public resetAfterDeath() {
+        this.walkable_area.clear();
+        this.walkable_area.hero = this.walkable_area.addEntity(this.hero_factory.makeSwordsman(new Vector2D(400,300)));
+        this.world_map.populateWorld();
+    }
+
     public update(delta_seconds: number): void {        
         this.game.model.buttons.forEach((button) => {
             button.update(delta_seconds, this.game.mouse);

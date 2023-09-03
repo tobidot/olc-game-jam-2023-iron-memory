@@ -154,6 +154,27 @@ export class WorldMap {
         return area;
     }
 
+
+    public populateWorld() {
+        const spawn_area = Rect.fromCenterAndSize(
+            this.game.model.walkable_area.area.center.cpy(),
+            this.game.model.walkable_area.area.size.cpy().mul(0.5)
+        );
+        this.game.model.world_map.areas.forEach(area => {
+            area.entities.forEach((entity)=>{
+                if (entity instanceof Agent) {
+                    entity.is_dead = false;
+                    entity.hitpoints = entity.max_hitpoints;
+                    const position = new Vector2D(
+                        Math.floor(Math.random() * spawn_area.width) + spawn_area.left,
+                        Math.floor(Math.random() * spawn_area.height) + spawn_area.top
+                    );
+                    entity.physics.shape.setCenter(position);
+                }
+            })
+        });
+    }
+
     public at(x: number, y: number): WorldMapArea {
         if (x < 0 || x >= this.size.x || y < 0 || y >= this.size.y) {
             throw new Error(`Invalid map position ${x}:${y}`);

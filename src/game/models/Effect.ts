@@ -7,6 +7,11 @@ export enum EffectImageName {
     DEFAULT,
 }
 
+export interface EffectText {
+    text: string;
+    color: string;
+}
+
 export type EffectImageSet = Map<EffectImageName, ImageAsset>;
 
 export class Effect extends Entity {
@@ -18,7 +23,7 @@ export class Effect extends Entity {
         public readonly game: Game,
         public rect: Rect,
         public rotation: number,
-        public images: EffectImageSet,
+        public images: EffectImageSet|EffectText,
         public seconds_to_live: number = 0.5,
     ) {
         super();

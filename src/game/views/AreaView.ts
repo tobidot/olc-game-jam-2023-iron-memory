@@ -65,8 +65,13 @@ export class AreaView {
         this.context.globalAlpha = effect.alpha;
         this.context.translate(effect.rect.center.x, effect.rect.center.y);
         this.context.rotate(effect.rotation + Math.PI / 2);
-        const image = effect.images.get(EffectImageName.DEFAULT);
-        this.renderImage(effect.rect.cpy().move(effect.rect.center.cpy().mul(-1)), image);
+        if (effect.images instanceof Map) {
+            const image = effect.images.get(EffectImageName.DEFAULT);
+            this.renderImage(effect.rect.cpy().move(effect.rect.center.cpy().mul(-1)), image);
+        } else {
+            this.context.fillStyle = effect.images.color;
+            this.context.fillText(effect.images.text, -effect.rect.w / 2, -effect.rect.h / 2);
+        }
         this.context.restore();
     }
 
