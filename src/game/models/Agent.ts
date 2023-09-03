@@ -6,6 +6,7 @@ import { Collision, PhysicsProxiable, PhysicsProxy } from "../../library/physics
 import { SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Game } from "../base/Game";
 import { Entity } from "./Entity";
+import { Physical } from "./Physical";
 
 export enum AgentImageName {
     DEFAULT,
@@ -13,7 +14,7 @@ export enum AgentImageName {
 
 export type AgentImageSet = Map<AgentImageName, ImageAsset>;
 
-export class Agent extends Entity implements PhysicsProxiable {
+export class Agent extends Entity implements PhysicsProxiable, Physical {
     // 'static' game properties
     public is_dead: boolean = false;
     public is_player: boolean = false;

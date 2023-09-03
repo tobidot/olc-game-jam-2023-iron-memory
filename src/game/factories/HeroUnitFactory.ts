@@ -17,7 +17,7 @@ export class HeroUnitFactory {
     public makeSwordsman(
         position: Vector2D,
     ) {
-        const size = 48;
+        const size = 32;
         const shape = new Circle(position, size / 2);
         const entity = new Hero(
             this.game,
@@ -26,7 +26,7 @@ export class HeroUnitFactory {
             true,
         );
         entity.max_hitpoints = entity.hitpoints = 40;
-        entity.movement_speed = 100;
+        entity.movement_speed = 200;
         return entity;
     }
 

@@ -5,6 +5,7 @@ import * as tgt from "../../library/index";
 import { registerAssets } from "./Assets";
 import { ViewName } from "../consts/ViewName";
 import { AreaController } from "../controllers/AreaController";
+import { WorldMapAreaBorder } from "../consts/Direction";
 
 export class Game extends tgt.GameTemplate<
     GameModel,
@@ -86,5 +87,10 @@ export class Game extends tgt.GameTemplate<
         reject: (reason?: any) => void
     ): void {
         this.model.reset();
+        const starting_area = this.model.world_map.at(
+            this.model.world_map.active_area_coordinate.x,
+            this.model.world_map.active_area_coordinate.y
+        );
+        this.controller.travelTo(starting_area, WorldMapAreaBorder.NORTH);
     }
 }

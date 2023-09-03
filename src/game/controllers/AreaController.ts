@@ -4,6 +4,7 @@ import { ConvexPolygone } from "../../library/math/ConvexPolygone";
 import { Rect } from "../../library/math/Rect";
 import { Game } from "../base/Game";
 import { Agent } from "../models/Agent";
+import { Hero } from "../models/Hero";
 import { BaseController } from "./BaseController";
 
 export class AreaController extends BaseController {
@@ -99,12 +100,46 @@ export class AreaController extends BaseController {
         player.physics.velocity = direction.normalize().mul(100);
     }
 
-    public lightAttack(player: Agent, direction: Vector2D): void {
-        player.attack_cooldown = player.light_attack_delay;
-        const attack_width = 30;
-        const attack_range = 200;
+    public lightAttack(player: Hero, direction: Vector2D): void {
+        this.attack(
+            player,
+            direction,
+            40,
+            100,
+            10,
+            player.light_attack_delay,
+        );
+    }
+
+    public heavyAttack(player: Hero, direction: Vector2D): void {
+        this.attack(
+            player,
+            direction,
+            80,
+            80,
+            20,
+            player.heavy_attack_delay,
+        );
+    }
+
+    public attack(
+        player: Hero,
+        direction: Vector2D,
+        attack_width: number,
+        attack_range: number,
+        attack_damage: number,
+        cooldown: number,
+    ) {
+        // set the cooldown
+        player.attack_cooldown = cooldown;
+
+        // add the visual effect
         const player_center = player.physics.shape.getCenter();
-        // const attack_area = Rect.fromCenterAndSize(player_center.cpy().add(direction.cpy().mul(attack_range / 2)), { x: attack_width, y: attack_range });
+        const effect = this.game.model.effect_factory
+            .makeSlash(player_center.cpy(), attack_width, attack_range, direction);
+        this.game.model.walkable_area.entities.push(effect);
+
+        // apply damage to enemies
         const direction_left = direction.cpy().rotate(Math.PI / 2).normalize();
         const direction_right = direction.cpy().rotate(-Math.PI / 2).normalize();
         const forward = direction.cpy().mul(attack_range);
@@ -116,31 +151,12 @@ export class AreaController extends BaseController {
             player_center.cpy().add(forward).add(right),
             player_center.cpy().add(right),
         ]);
-        const effect = this.game.model.effect_factory.makeSlash(player_center.cpy(), attack_width, attack_range, direction);
-        this.game.model.walkable_area.entities.push(effect);
+        // pick enemies in area
         const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_shape)
             .map((proxy) => proxy.reference)
-            .filter((entity) : entity is Agent => entity instanceof Agent && !entity.is_player);
+            .filter((entity): entity is Agent => entity instanceof Agent && !entity.is_player);
         enemies.forEach((enemy) => {
-            enemy.hitpoints -= 10;
-            if (enemy.hitpoints <= 0) {
-                enemy.is_dead = true;
-            }
-        });
-    }
-
-    public heavyAttack(player: Agent, direction: Vector2D): void {
-        player.attack_cooldown = player.light_attack_delay;
-        const attack_area = player.physics.shape.getOuterBox().cpy();
-        attack_area.center.add(direction.normalize().mul(20));
-        attack_area.width = 30;
-        attack_area.height = 30;
-        
-        const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_area)
-            .map((proxy) => proxy.reference)
-            .filter((entity) : entity is Agent => entity instanceof Agent && !entity.is_player);
-        enemies.forEach((enemy) => {
-            enemy.hitpoints -= 10;
+            enemy.hitpoints -= attack_damage;
             if (enemy.hitpoints <= 0) {
                 enemy.is_dead = true;
             }

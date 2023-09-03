@@ -32,16 +32,15 @@ export class Hero extends Agent {
 
     public onWorldCollision(distance: Vector2D): void {
         // do nothing
-        console.log('onWorldCollision', distance);
         const border = ((): WorldMapAreaBorder => {
             if (distance.x > 0) {
                 return WorldMapAreaBorder.EAST;
             } else if (distance.x < 0) {
                 return WorldMapAreaBorder.WEST;
             } else if (distance.y > 0) {
-                return WorldMapAreaBorder.NORTH;
-            } else {
                 return WorldMapAreaBorder.SOUTH;
+            } else {
+                return WorldMapAreaBorder.NORTH;
             }
         })();
         this.game.controller.travel(border);

@@ -4,17 +4,18 @@ import { Agent } from "./Agent";
 import { Effect } from "./Effect";
 import { Entity } from "./Entity";
 import { Hero } from "./Hero";
+import { WorldMapArea } from "./WorldMap";
 
 export class WalkableArea {
     //
-    public readonly size: Rect = Rect.fromCenterAndSize({ x: 400, y: 315 }, { x: 800, y: 570 });
+    public readonly area: Rect = Rect.fromCenterAndSize({ x: 400, y: 315 }, { x: 800, y: 570 });
     public physics: SatPhysicsEngine;
     public entities: Array<Entity> = [];
     public hero: Hero | null = null;
 
     constructor() {
         this.physics = new SatPhysicsEngine({
-            world_box: this.size,
+            world_box: this.area,
         });
     }
 
@@ -75,4 +76,6 @@ export class WalkableArea {
             )
             .forEach(e => this.removeEntity(e));
     }
+
+    
 }

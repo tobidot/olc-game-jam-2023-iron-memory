@@ -5,6 +5,7 @@ import { Agent, AgentImageName } from "../models/Agent";
 import { Effect, EffectImageName } from "../models/Effect";
 import { ImageAsset } from "../../library";
 import { Rect } from "../../library/math/Rect";
+import { Obstacle, ObstacleImageName } from "../models/Obstacle";
 
 /**
  * The area view renders the walkable area and all entities in it
@@ -38,7 +39,13 @@ export class AreaView {
         // render normal entities
         entities
             .filter((entity): entity is Agent => entity instanceof Agent)
+            .sort((a, b) => a.physics.shape.getOuterBox().bottom - b.physics.shape.getOuterBox().bottom)
             .forEach((entity) => this.renderAgent(entity));
+        // render obstacles
+        entities
+            .filter((entity): entity is Obstacle => entity instanceof Obstacle)
+            .sort((a, b) => a.rect.bottom - b.rect.bottom)
+            .forEach((entity) => this.renderObstacle(entity));
         // render effects
         entities
             .filter((entity): entity is Effect => entity instanceof Effect)
@@ -48,7 +55,12 @@ export class AreaView {
         // .forEach((entity) => this.renderEntityDebug(entity));
     }
 
-    public renderEffect(effect: Effect) : void {
+    public renderObstacle(entity: Obstacle): void {
+        const image = entity.images.get(ObstacleImageName.DEFAULT);
+        this.renderImage(entity.rect, image);
+    }
+
+    public renderEffect(effect: Effect): void {
         this.context.save();
         this.context.globalAlpha = effect.alpha;
         this.context.translate(effect.rect.center.x, effect.rect.center.y);
@@ -69,7 +81,7 @@ export class AreaView {
         this.renderImage(rect, image);
     }
 
-    public renderImage( rect: Rect, image?: ImageAsset): void {
+    public renderImage(rect: Rect, image?: ImageAsset): void {
         if (!image) {
             this.context.fillStyle = "#f00";
             this.context.fillRect(

@@ -2,11 +2,13 @@ import * as tgt from "../../library/index";
 import { MenuButtonModel, MenuGroupModel, MenuModel, assert } from "../../library/index";
 import { Vector2D } from "../../library/math";
 import { Game } from "../base/Game";
+import { WorldMapAreaBorder } from "../consts/Direction";
 import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 import { CreepUnitFactory } from "../factories/CreepUnitFactory";
 import { EffectFactory } from "../factories/EffectFactory";
 import { HeroUnitFactory } from "../factories/HeroUnitFactory";
+import { ObstacleFactory } from "../factories/ObstacleFactory";
 import { WalkableArea } from "./WalkableArea";
 import { WorldMap } from "./WorldMap";
 
@@ -17,20 +19,23 @@ export class GameModel implements tgt.Model {
     public buttons: Array<MenuButtonModel> = [];
     //
     public walkable_area = new WalkableArea();
-    public world_map = new WorldMap();
+    public world_map: WorldMap;
     // factories
     public hero_factory: HeroUnitFactory;
     public creep_factory: CreepUnitFactory;
     public effect_factory: EffectFactory;
+    public obstacle_factory: ObstacleFactory;
 
     public constructor(
         public readonly game: Game,
         context: CanvasRenderingContext2D,
     ) {
         this.buttons = this.createMenu(context);
+        this.world_map  = new WorldMap(this.game);
         this.hero_factory = new HeroUnitFactory(this.game);
         this.creep_factory = new CreepUnitFactory(this.game);
         this.effect_factory = new EffectFactory(this.game);
+        this.obstacle_factory = new ObstacleFactory(this.game);
     }
 
     public createMenu(
@@ -78,9 +83,6 @@ export class GameModel implements tgt.Model {
     public reset() {
         this.walkable_area.clear();
         this.walkable_area.hero = this.walkable_area.addEntity(this.hero_factory.makeSwordsman(new Vector2D(400,300)));
-        for(let i=0;i< 12;++i) {
-            this.walkable_area.addEntity(this.creep_factory.makeGoblin(new Vector2D(Math.random()* 800,Math.random() * 600)));
-        }
         this.world_map.generateWorld();
     }
 
