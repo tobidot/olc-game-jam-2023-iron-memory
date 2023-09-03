@@ -7,8 +7,8 @@ import { SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
 import { Agent } from "./Agent";
-import { AttackDamage } from "./AttackDamage";
-import { Entity } from "./Entity";
+import { AttackAttributes } from "./AttackAttributes";
+import { Weapon } from "./Weapon";
 
 export enum AgentImageName {
     DEFAULT,
@@ -17,6 +17,7 @@ export enum AgentImageName {
 export type AgentImageSet = Map<AgentImageName, ImageAsset>;
 
 export class Hero extends Agent {
+    public weapon: Weapon;
 
     public constructor(
         protected game: Game,
@@ -25,6 +26,7 @@ export class Hero extends Agent {
         is_player: boolean,
     ) {
         super(game, shape, images, is_player);
+        this.weapon = this.game.model.weapon_factory.makeSword(this.physics.shape.getCenter());
     }
 
     public update(delta_seconds: number): void {
@@ -53,10 +55,26 @@ export class Hero extends Agent {
 
     public onDeath() {
         this.game.model.resetAfterDeath();
+        const current_area = this.game.model.world_map.at(
+            this.game.model.world_map.active_area_coordinate.x,
+            this.game.model.world_map.active_area_coordinate.y,
+        );
+        // drop the weapon here
+        current_area.entities.push(this.weapon);
+        this.weapon.physics.shape.setCenter(this.physics.shape.getCenter());
+        // move to the starting area
         const starting_area = this.game.model.world_map.at(
             Math.floor(this.game.model.world_map.size.x / 2),
             Math.floor(this.game.model.world_map.size.y / 2),
         );
         this.game.controller.travelTo(starting_area);
+    }
+
+    public getHeavyAttackStruct(): AttackAttributes {
+        return this.weapon.modifyHeavyAttack(this.heavy_attack);
+    }
+
+    public getLightAttackStruct(): AttackAttributes {
+        return this.weapon.modifyLightAttack(this.light_attack);
     }
 }

@@ -6,9 +6,11 @@ import { WorldMapAreaType } from "../consts/WorldMapAreaType";
 import { Agent } from "./Agent";
 import { Entity } from "./Entity";
 import { Physical } from "./Physical";
+import { Weapon } from "./Weapon";
 
 export class WorldMapArea {
     public discovered: boolean = false;
+    public weapons: Array<Weapon> = [];
 
     constructor(
         public position: Vector2D,

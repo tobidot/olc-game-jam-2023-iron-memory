@@ -1,14 +1,8 @@
-import { AABBPhysicsProxy, ImageAsset } from "../../library";
 import { Vector2D } from "../../library/math";
-import { Rect } from "../../library/math/Rect";
 import { Shape } from "../../library/math/Shape";
 import { Collision, PhysicsProxiable, PhysicsProxy } from "../../library/physics/Physics";
-import { SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Game } from "../base/Game";
 import { Agent, AgentImageSet } from "./Agent";
-import { AttackDamage } from "./AttackDamage";
-import { Entity } from "./Entity";
-import { Physical } from "./Physical";
 
 export class AiAgent extends Agent {
 
@@ -63,31 +57,4 @@ export class AiAgent extends Agent {
         // do nothing
     }
 
-    public applyDamage(damage: AttackDamage) {
-        const physical = Math.max(damage.physical - this.physical_resistance, 0);
-        const psy = Math.max(damage.psy - this.psy_resistance, 0);
-        const ice = Math.max(damage.ice - this.ice_resistance, 0);
-        const fire = Math.max(damage.fire - this.fire_resistance, 0);
-        const total = physical + psy + ice + fire;
-        this.hitpoints -= total;
-
-        // display damage for all damage types
-        const types = [physical, psy, ice, fire];
-        const colors = ["white", "hotpink", "aqua", "orange"];
-        types.forEach((damage, index) => {
-            if (damage > 0) {
-                const position = this.physics.shape.getCenter().cpy().add(new Vector2D(index * 10, -20));
-                const effect = this.game.model.effect_factory.makeDamageText(
-                    position,
-                    damage.toFixed(0),
-                    colors[index],
-                );
-                this.game.model.walkable_area.addEntity(effect);
-            }
-        });
-
-        if (this.hitpoints <= 0) {
-            this.is_dead = true;
-        }
-    }
 }

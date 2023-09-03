@@ -9,4 +9,8 @@ export class AttackAttributes {
         public channel_seconds: number = 0,
     ) {
     }
+
+    public cpy(): AttackAttributes {
+        return new AttackAttributes(this.damage, this.attack_width, this.attack_range, this.cooldown_seconds, this.channel_seconds);
+    }
 }

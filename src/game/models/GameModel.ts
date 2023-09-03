@@ -9,6 +9,7 @@ import { CreepUnitFactory } from "../factories/CreepUnitFactory";
 import { EffectFactory } from "../factories/EffectFactory";
 import { HeroUnitFactory } from "../factories/HeroUnitFactory";
 import { ObstacleFactory } from "../factories/ObstacleFactory";
+import { WeaponFactory } from "../factories/WeaponFactory";
 import { WalkableArea } from "./WalkableArea";
 import { WorldMap } from "./WorldMap";
 
@@ -25,6 +26,7 @@ export class GameModel implements tgt.Model {
     public creep_factory: CreepUnitFactory;
     public effect_factory: EffectFactory;
     public obstacle_factory: ObstacleFactory;
+    public weapon_factory: WeaponFactory;
 
     public constructor(
         public readonly game: Game,
@@ -36,6 +38,7 @@ export class GameModel implements tgt.Model {
         this.creep_factory = new CreepUnitFactory(this.game);
         this.effect_factory = new EffectFactory(this.game);
         this.obstacle_factory = new ObstacleFactory(this.game);
+        this.weapon_factory = new WeaponFactory(this.game);
     }
 
     public createMenu(

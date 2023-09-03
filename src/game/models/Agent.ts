@@ -25,6 +25,7 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
     // 'static' game properties
     public is_dead: boolean = false;
     public is_player: boolean = false;
+    public is_neutral: boolean = false;
     // game variables
     // base stats
     public max_hitpoints: number = 100;
@@ -125,23 +126,4 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
 
     }
 
-    public getLightAttackDamageStruct(): AttackDamage {
-        return new AttackDamage(
-            this,
-            10,
-            0,
-            0,
-            0,
-        );
-    }
-
-    public getHeavyAttackDamageStruct(): AttackDamage {
-        return new AttackDamage(
-            this,
-            30,
-            0,
-            0,
-            20,
-        );
-    }
 }

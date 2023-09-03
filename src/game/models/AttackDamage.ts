@@ -9,4 +9,8 @@ export class AttackDamage {
         public readonly ice: number = 0,
     ) {
     }
+
+    public cpy(): AttackDamage {
+        return new AttackDamage(this.source, this.physical, this.psy, this.fire, this.ice);
+    }
 }

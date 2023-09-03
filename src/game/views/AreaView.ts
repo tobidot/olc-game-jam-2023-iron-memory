@@ -84,6 +84,19 @@ export class AreaView {
         rect.width = agent.render_box.w;
         rect.height = agent.render_box.h;
         this.renderImage(rect, image);
+
+        // render life bar
+        const life_bar =  Rect.fromLeftTopWidthHeight(
+            rect.left,
+            rect.top - 5,
+            rect.width * agent.hitpoints / agent.max_hitpoints,
+            3
+        );
+        this.context.fillStyle = "#f00";
+        this.context.fillRect(
+            life_bar.left, life_bar.top,
+            life_bar.width, life_bar.height
+        );
     }
 
     public renderImage(rect: Rect, image?: ImageAsset): void {
