@@ -3,8 +3,6 @@ import { View, ViewSettings } from "../../library/abstract/mvc/View";
 import { GameBaseView } from "../../library";
 import { MenuView } from "../../library/abstract/mvc/components/menu/MenuView";
 import { ViewName } from "../consts/ViewName";
-import { Entity } from "../models/Entity";
-import { Agent, AgentImageName } from "../models/Agent";
 import { MapView } from "./MapView";
 import { InventoryView } from "./InventoryView";
 import { AchievementView } from "./AchievementView";
@@ -48,7 +46,7 @@ export class GameView extends GameBaseView implements View {
         super.render(model);
         // render the active view
         switch (model.active_view) {
-            case ViewName.GAME:
+            case ViewName.AREA:
                 this.area_view.render(model);
                 break;
             case ViewName.WORLD_MAP:

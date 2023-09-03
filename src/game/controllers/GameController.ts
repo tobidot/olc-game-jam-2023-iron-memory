@@ -1,16 +1,16 @@
-import { GameBaseController, KeyName, KeyUpEvent, KeyboardController, MenuModel, MouseUpEvent } from "../../library";
-import { Controller } from "../../library/abstract/mvc/Controller";
+import { KeyName, KeyUpEvent, MenuModel, MouseUpEvent } from "../../library";
 import { ControllerResponse } from "../../library/abstract/mvc/Response";
 import { Game } from "../base/Game";
-import { MenuButtonName, main_menu_button_names, top_menu_button_names } from "../consts/MenuButtonName";
+import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
+import { BaseController } from "./BaseController";
 
-export class GameController implements Controller, KeyboardController {
+export class GameController extends BaseController {
 
     public constructor(
-        protected readonly game: Game,
+        game: Game,
     ) {
-
+        super(game);
     }
 
     /**
@@ -27,32 +27,7 @@ export class GameController implements Controller, KeyboardController {
 
     public update(delta_seconds: number): ControllerResponse {
         this.game.model.update(delta_seconds);
-        this.game.model.buttons.forEach((button) => {
-            button.update(delta_seconds, this.game.mouse);
-        });
         return null;
-    }
-
-    public onMouseUp(event: MouseUpEvent): void {
-        this.game.model.buttons.forEach((button) => {
-            if (button.is_visible && button.area.contains(this.game.mouse.position)) {
-                button.select();
-                return true;
-            }
-        });
-    }
-
-    
-    public onKeyUp(event: KeyUpEvent): void {
-        const is_control_down = this.game.keyboard.getKey(KeyName.Control);
-        switch (event.key.name) {
-            case KeyName.KeyO:
-                if (is_control_down) {
-                    // cheat reveal map
-                    this.game.model.world_map.areas.forEach((area) => { area.discovered = true; });
-                }
-                break;
-        }
     }
 
     /**
@@ -67,58 +42,10 @@ export class GameController implements Controller, KeyboardController {
             case MenuButtonName.INVENTORY: this.switchView(ViewName.INVENTORY); break;
             case MenuButtonName.WORLD_MAP: this.switchView(ViewName.WORLD_MAP); break;
             case MenuButtonName.MAIN_MENU: this.switchView(ViewName.MAIN_MENU); break;
-            case MenuButtonName.GAME: this.switchView(ViewName.GAME); break;
+            case MenuButtonName.GAME: this.switchView(ViewName.AREA); break;
             case MenuButtonName.NEW_GAME: this.newGame(); break;
             default: console.log("Unknown menu item selected: " + item.name); break;
         }
-    }
-
-    /**
-     * Change view to the given view
-     * @param name 
-     */
-    public switchView(name: ViewName) {
-        this.game.model.active_view = name;
-        this.hideAllSubViewButtons();
-        switch (name) {
-            case ViewName.ACHIEVEMENTS:
-                this.showSubViewButtons([]);
-                break;
-            case ViewName.INVENTORY:
-                this.showSubViewButtons([]);
-                break;
-            case ViewName.MAIN_MENU:
-                this.showSubViewButtons(main_menu_button_names);
-                break;
-            case ViewName.WORLD_MAP:
-                this.showSubViewButtons([]);
-                break;
-            case ViewName.GAME:
-                this.showSubViewButtons([]);
-                break;
-        }
-    }
-
-    /**
-     * Hide all buttons except the top menu bar
-     */
-    public hideAllSubViewButtons() {
-        const active = top_menu_button_names;
-        this.game.model.buttons.forEach((button) => {
-            button.is_visible = active.includes(button.name as MenuButtonName);
-        });
-    }
-
-    /**
-     * Show the buttons with the given names
-     * @param buttons 
-     */
-    public showSubViewButtons(buttons: Array<MenuButtonName>) {
-        this.game.model.buttons.forEach((button) => {
-            if (buttons.includes(button.name as MenuButtonName)) {
-                button.is_visible = true;
-            }
-        });
     }
 
 }

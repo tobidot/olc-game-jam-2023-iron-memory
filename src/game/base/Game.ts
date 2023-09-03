@@ -3,17 +3,56 @@ import { GameModel } from "../models/GameModel";
 import { GameView } from "../views/GameView";
 import * as tgt from "../../library/index";
 import { registerAssets } from "./Assets";
+import { ViewName } from "../consts/ViewName";
+import { AreaController } from "../controllers/AreaController";
 
 export class Game extends tgt.GameTemplate<
     GameModel,
     GameView,
     GameController
 > {
+    // Controllers
+    protected area_controller!: AreaController;
     //
     public on_game_finished: null | (() => void) = null;
 
     public constructor(app: HTMLElement) {
         super(app);
+
+    }
+
+    protected getKeyboardController(): tgt.KeyboardController {
+        switch (this.model.active_view) {
+            case ViewName.AREA:
+                return this.area_controller;
+            case ViewName.ACHIEVEMENTS:
+                return this.area_controller;
+            case ViewName.INVENTORY:
+                return this.area_controller;
+            case ViewName.MAIN_MENU:
+                return this.area_controller;
+            case ViewName.WORLD_MAP:
+                return this.area_controller;
+            default:
+                throw new Error("Unknown view: " + this.model.active_view);
+        }
+    }
+
+    protected getMouseController(): tgt.MouseController {
+        switch (this.model.active_view) {
+            case ViewName.AREA:
+                return this.area_controller;
+            case ViewName.ACHIEVEMENTS:
+                return this.area_controller;
+            case ViewName.INVENTORY:
+                return this.area_controller;
+            case ViewName.MAIN_MENU:
+                return this.area_controller;
+            case ViewName.WORLD_MAP:
+                return this.area_controller;
+            default:
+                throw new Error("Unknown view: " + this.model.active_view);
+        }
     }
 
     /**
@@ -25,6 +64,7 @@ export class Game extends tgt.GameTemplate<
         this.view = new GameView(context);
         this.model = new GameModel(this, context);
         this.controller = new GameController(this);
+        this.area_controller = new AreaController(this);
         return this;
     }
 

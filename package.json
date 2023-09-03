@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite serve",
     "preview": "vite preview",
+    "check": "tsc --watch --noEmit",
     "build": "node ./bin/incrementVersion.js && vite build"
   },
   "dependencies": {},

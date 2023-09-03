@@ -6,26 +6,27 @@ import { Assets } from "../base/Assets";
 import { Game } from "../base/Game";
 import { Agent, AgentImageName, AgentImageSet } from "../models/Agent";
 
-export class HeroUnitFactory {
+export class CreepUnitFactory {
 
     constructor(
         protected game: Game,
     ) {
     }
 
-    public makeSwordsman(
+    public makeGoblin(
         position: Vector2D,
     ) {
-        const size = 48;
+        const size = 16;
         const shape = new Circle(position, size / 2);
         const entity = new Agent(
             this.game,
             shape,
-            this.getImageSet('swordsman'),
-            true,
+            this.getImageSet('goblin'),
+            false,
         );
-        entity.max_hitpoints = entity.hitpoints = 40;
-        entity.movement_speed = 100;
+        entity.max_hitpoints = entity.hitpoints = 6;
+        entity.movement_speed = 140;
+        entity.hitpoints = 6;
         return entity;
     }
 
@@ -39,7 +40,7 @@ export class HeroUnitFactory {
 }
 
 const image_sets = {
-    swordsman: [
-        [AgentImageName.DEFAULT, Assets.images.area.player],
+    goblin: [
+        [AgentImageName.DEFAULT, Assets.images.area.enemy],
     ],
 } as const;

@@ -3,5 +3,5 @@ export enum ViewName {
     INVENTORY,
     ACHIEVEMENTS,
     WORLD_MAP,
-    GAME,
+    AREA,
 }
