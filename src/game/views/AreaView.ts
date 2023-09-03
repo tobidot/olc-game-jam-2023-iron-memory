@@ -2,6 +2,9 @@ import { GameModel } from "../models/GameModel";
 import { ViewSettings } from "../../library/abstract/mvc/View";
 import { Entity } from "../models/Entity";
 import { Agent, AgentImageName } from "../models/Agent";
+import { Effect, EffectImageName } from "../models/Effect";
+import { ImageAsset } from "../../library";
+import { Rect } from "../../library/math/Rect";
 
 /**
  * The area view renders the walkable area and all entities in it
@@ -34,27 +37,39 @@ export class AreaView {
         const entities = model.walkable_area.entities;
         // render normal entities
         entities
-            // .filter(entity => !(entity instanceof Effect))
-            .forEach((entity) => this.renderEntity(entity));
+            .filter((entity): entity is Agent => entity instanceof Agent)
+            .forEach((entity) => this.renderAgent(entity));
         // render effects
-        // entities.filter(entity => entity instanceof Effect)
-        //     .forEach((entity) => this.renderEntity(entity));
+        entities
+            .filter((entity): entity is Effect => entity instanceof Effect)
+            .forEach((entity) => this.renderEffect(entity));
         // render debug
         // entities
-            // .forEach((entity) => this.renderEntityDebug(entity));
+        // .forEach((entity) => this.renderEntityDebug(entity));
     }
 
-    public renderEntity(entity: Entity): void {
-        if (!(entity instanceof Agent)) {
-            return ;
-        }
-        const offset = { x: entity.render_box.w / 2, y: entity.render_box.h / 2 }
-        const position = entity.render_box.center.cpy().sub(offset);
+    public renderEffect(effect: Effect) : void {
+        this.context.save();
+        this.context.globalAlpha = effect.alpha;
+        this.context.translate(effect.rect.center.x, effect.rect.center.y);
+        this.context.rotate(effect.rotation + Math.PI / 2);
+        const image = effect.images.get(EffectImageName.DEFAULT);
+        this.renderImage(effect.rect.cpy().move(effect.rect.center.cpy().mul(-1)), image);
+        this.context.restore();
+    }
+
+    public renderAgent(agent: Agent): void {
+        const offset = { x: agent.render_box.w / 2, y: agent.render_box.h / 2 }
+        const position = agent.render_box.center.cpy().sub(offset);
         this.context.globalAlpha = 1;
-        const image = entity.images.get(AgentImageName.DEFAULT);
-        const rect = entity.render_box.cpy();
-        rect.width = entity.render_box.w;
-        rect.height = entity.render_box.h;
+        const image = agent.images.get(AgentImageName.DEFAULT);
+        const rect = agent.render_box.cpy();
+        rect.width = agent.render_box.w;
+        rect.height = agent.render_box.h;
+        this.renderImage(rect, image);
+    }
+
+    public renderImage( rect: Rect, image?: ImageAsset): void {
         if (!image) {
             this.context.fillStyle = "#f00";
             this.context.fillRect(
@@ -68,6 +83,5 @@ export class AreaView {
                 rect.width, rect.height
             );
         }
-
     }
 }

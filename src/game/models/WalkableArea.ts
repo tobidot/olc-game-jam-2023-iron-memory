@@ -1,14 +1,16 @@
 import { Rect } from "../../library/math/Rect";
 import { SatPhysicsEngine, SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Agent } from "./Agent";
+import { Effect } from "./Effect";
 import { Entity } from "./Entity";
+import { Hero } from "./Hero";
 
 export class WalkableArea {
     //
     public readonly size: Rect = Rect.fromCenterAndSize({ x: 400, y: 315 }, { x: 800, y: 570 });
     public physics: SatPhysicsEngine;
     public entities: Array<Entity> = [];
-    public player: Agent | null = null;
+    public hero: Hero | null = null;
 
     constructor() {
         this.physics = new SatPhysicsEngine({
@@ -53,7 +55,7 @@ export class WalkableArea {
     public clear() {
         this.physics.reset();
         this.entities = [];
-        this.player = null;
+        this.hero = null;
     }
 
     /**
@@ -63,9 +65,14 @@ export class WalkableArea {
     public update(delta_seconds: number) {
         this.physics.update(delta_seconds);
         this.entities.forEach((entity) => {
-            if ('update' in entity && typeof entity.update === "function") {
+            if (entity instanceof Agent || entity instanceof Effect) {
                 entity.update(delta_seconds);
             }
         });
+        this.entities
+            .filter(
+                e => (e instanceof Agent && e.is_dead ) || (e instanceof Effect && e.is_destroyed)
+            )
+            .forEach(e => this.removeEntity(e));
     }
 }

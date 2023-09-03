@@ -5,6 +5,7 @@ import { Game } from "../base/Game";
 import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 import { CreepUnitFactory } from "../factories/CreepUnitFactory";
+import { EffectFactory } from "../factories/EffectFactory";
 import { HeroUnitFactory } from "../factories/HeroUnitFactory";
 import { WalkableArea } from "./WalkableArea";
 import { WorldMap } from "./WorldMap";
@@ -20,6 +21,7 @@ export class GameModel implements tgt.Model {
     // factories
     public hero_factory: HeroUnitFactory;
     public creep_factory: CreepUnitFactory;
+    public effect_factory: EffectFactory;
 
     public constructor(
         public readonly game: Game,
@@ -28,6 +30,7 @@ export class GameModel implements tgt.Model {
         this.buttons = this.createMenu(context);
         this.hero_factory = new HeroUnitFactory(this.game);
         this.creep_factory = new CreepUnitFactory(this.game);
+        this.effect_factory = new EffectFactory(this.game);
     }
 
     public createMenu(
@@ -74,7 +77,7 @@ export class GameModel implements tgt.Model {
 
     public reset() {
         this.walkable_area.clear();
-        this.walkable_area.player = this.walkable_area.addEntity(this.hero_factory.makeSwordsman(new Vector2D(400,300)));
+        this.walkable_area.hero = this.walkable_area.addEntity(this.hero_factory.makeSwordsman(new Vector2D(400,300)));
         for(let i=0;i< 12;++i) {
             this.walkable_area.addEntity(this.creep_factory.makeGoblin(new Vector2D(Math.random()* 800,Math.random() * 600)));
         }

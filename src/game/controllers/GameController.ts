@@ -1,6 +1,7 @@
-import { KeyName, KeyUpEvent, MenuModel, MouseUpEvent } from "../../library";
+import { KeyName, KeyUpEvent, MenuModel, MouseUpEvent, assert } from "../../library";
 import { ControllerResponse } from "../../library/abstract/mvc/Response";
 import { Game } from "../base/Game";
+import { WorldMapAreaBorder } from "../consts/Direction";
 import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 import { BaseController } from "./BaseController";
@@ -48,4 +49,16 @@ export class GameController extends BaseController {
         }
     }
 
+    /**
+     * Pass to another area in the map
+     * @param border 
+     */
+    public travel(border: WorldMapAreaBorder) {
+        const player = this.game.model.walkable_area.hero;
+        assert(!!player, "No player unit");
+        this.game.model.world_map.travel(border);
+        const walkable_area = this.game.model.walkable_area;
+        walkable_area.clear();
+        walkable_area.addEntity(walkable_area.hero = player);
+    }
 }

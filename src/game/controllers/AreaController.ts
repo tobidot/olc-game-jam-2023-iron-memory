@@ -1,5 +1,7 @@
 import { KeyName, KeyUpEvent, KeyboardController, MouseButtonName, MouseController, MouseDownEvent, MouseUpEvent } from "../../library";
 import { Vector2D } from "../../library/math";
+import { ConvexPolygone } from "../../library/math/ConvexPolygone";
+import { Rect } from "../../library/math/Rect";
 import { Game } from "../base/Game";
 import { Agent } from "../models/Agent";
 import { BaseController } from "./BaseController";
@@ -17,13 +19,13 @@ export class AreaController extends BaseController {
             // top menu bar
             return;
         }
-        const player = this.game.model.walkable_area.player;
+        const player = this.game.model.walkable_area.hero;
         if (!player) {
             // no player unit
             return;
         }
         const target = this.game.mouse.position;
-        const direction = target.sub(player.physics.shape.getCenter());
+        const direction = target.cpy().sub(player.physics.shape.getCenter()).normalize();
         if (player.attack_cooldown <= 0) {
             switch (event.button.name) {
                 case MouseButtonName.LEFT:
@@ -90,7 +92,7 @@ export class AreaController extends BaseController {
     }
 
     public playerMove(direction: Vector2D) {
-        const player = this.game.model.walkable_area.player;
+        const player = this.game.model.walkable_area.hero;
         if (!player) {
             return;
         }
@@ -99,11 +101,24 @@ export class AreaController extends BaseController {
 
     public lightAttack(player: Agent, direction: Vector2D): void {
         player.attack_cooldown = player.light_attack_delay;
-        const attack_area = player.physics.shape.getOuterBox().cpy();
-        attack_area.center.add(direction.normalize().mul(20));
-        attack_area.width = 20;
-        attack_area.height = 20;
-        const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_area)
+        const attack_width = 30;
+        const attack_range = 200;
+        const player_center = player.physics.shape.getCenter();
+        // const attack_area = Rect.fromCenterAndSize(player_center.cpy().add(direction.cpy().mul(attack_range / 2)), { x: attack_width, y: attack_range });
+        const direction_left = direction.cpy().rotate(Math.PI / 2).normalize();
+        const direction_right = direction.cpy().rotate(-Math.PI / 2).normalize();
+        const forward = direction.cpy().mul(attack_range);
+        const left = direction_left.cpy().mul(attack_width / 2);
+        const right = direction_right.cpy().mul(attack_width / 2);
+        const attack_shape = new ConvexPolygone([
+            player_center.cpy().add(left),
+            player_center.cpy().add(forward).add(left),
+            player_center.cpy().add(forward).add(right),
+            player_center.cpy().add(right),
+        ]);
+        const effect = this.game.model.effect_factory.makeSlash(player_center.cpy(), attack_width, attack_range, direction);
+        this.game.model.walkable_area.entities.push(effect);
+        const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_shape)
             .map((proxy) => proxy.reference)
             .filter((entity) : entity is Agent => entity instanceof Agent && !entity.is_player);
         enemies.forEach((enemy) => {

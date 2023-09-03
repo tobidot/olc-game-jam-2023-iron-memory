@@ -5,6 +5,7 @@ import { Rect } from "../../library/math/Rect";
 import { Assets } from "../base/Assets";
 import { Game } from "../base/Game";
 import { Agent, AgentImageName, AgentImageSet } from "../models/Agent";
+import { Hero } from "../models/Hero";
 
 export class HeroUnitFactory {
 
@@ -18,7 +19,7 @@ export class HeroUnitFactory {
     ) {
         const size = 48;
         const shape = new Circle(position, size / 2);
-        const entity = new Agent(
+        const entity = new Hero(
             this.game,
             shape,
             this.getImageSet('swordsman'),

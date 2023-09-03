@@ -100,6 +100,27 @@ export class WorldMap {
     public update(delta_ms: number): void {
         // do nothing
     }
-
+    
+    public travel(border: WorldMapAreaBorder) : void {
+        const current_area = this.at(this.active_area_coordinate.x, this.active_area_coordinate.y);
+        const next_area_position = this.getBorderPosition(current_area.position, border);
+        if (!this.isValidPosition(next_area_position)) {
+            throw new Error(`Invalid travel position ${next_area_position.x}:${next_area_position.y}`);
+        }
+        const next_area = this.at(next_area_position.x, next_area_position.y);
+        this.active_area_coordinate = next_area_position;
+        // discover next area
+        next_area.open_borders.forEach((is_open, border) => {
+            if (!is_open) {
+                return;
+            }
+            const position = this.getBorderPosition(next_area.position, border);
+            if (!this.isValidPosition(position)) {
+                return;
+            }
+            const area = this.at(position.x, position.y);
+            area.discovered = true;
+        });
+    }
 
 }

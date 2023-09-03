@@ -3,6 +3,7 @@ import { AssetManager } from "../../library";
 import player from "../../../assets/images/area/player.png";
 import obstacle from "../../../assets/images/area/obstacle.png";
 import enemy from "../../../assets/images/area/enemy.png";
+import slash from "../../../assets/images/area/slash.png";
 // world_map
 import dungeon from "../../../assets/images/world_map/dungeon.png";
 import forrest from "../../../assets/images/world_map/forrest.png";
@@ -16,6 +17,7 @@ export const Assets = {
             player,
             obstacle,
             enemy,
+            slash,
         },
         world_map: {
             dungeon,
