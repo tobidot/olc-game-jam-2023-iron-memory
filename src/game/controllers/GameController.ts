@@ -1,15 +1,18 @@
 import { KeyName, KeyUpEvent, MenuModel, MouseUpEvent, assert } from "../../library";
 import { ControllerResponse } from "../../library/abstract/mvc/Response";
 import { Vector2D } from "../../library/math";
+import { Circle } from "../../library/math/Circle";
 import { ConvexPolygone } from "../../library/math/ConvexPolygone";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
 import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
+import { WeaponAchievement } from "../consts/WeaponAchievements";
 import { Agent } from "../models/Agent";
 import { AttackAttributes } from "../models/AttackAttributes";
 import { AttackDamage } from "../models/AttackDamage";
 import { Hero } from "../models/Hero";
+import { Weapon } from "../models/Weapon";
 import { WorldMapArea } from "../models/WorldMap";
 import { BaseController } from "./BaseController";
 
@@ -97,6 +100,9 @@ export class GameController extends BaseController {
     ) {
         const player = this.game.model.walkable_area.hero;
         assert(!!player, "No player unit");
+
+        // 
+        player.weapon.increase(WeaponAchievement.TRAVELER, 1);
         // reset the walkable area
         const walkable_area = this.game.model.walkable_area;
         // reset the player position to the opposie border of where he just traveld to
@@ -115,7 +121,7 @@ export class GameController extends BaseController {
         this.game.model.world_map.active_area_coordinate.set(new_area.position);
         new_area.open_borders.forEach((is_open, border) => {
             if (!is_open) {
-                return ;
+                return;
             }
             const position = this.game.model.world_map.getBorderPosition(new_area.position, border);
             const area = this.game.model.world_map.at(position.x, position.y);
@@ -161,8 +167,8 @@ export class GameController extends BaseController {
         const player = this.game.model.walkable_area.hero;
         if (!player || player.channel !== null) {
             return;
-        }        
-        player.physics.velocity = direction.normalize().mul(100);
+        }
+        player.physics.velocity = direction.normalize().mul(player.movement_speed);
     }
 
     public lightAttack(agent: Agent, direction: Vector2D): void {
@@ -245,6 +251,29 @@ export class GameController extends BaseController {
 
             this.playerUpdateMovement();
         }
+    }
+
+    public swapWeapon() {
+        const player = this.game.model.walkable_area.hero;
+        if (!player) {
+            return;
+        }
+        const old_weapon = player.weapon;
+        const current_area = this.game.model.walkable_area;
+        const entities_in_range = current_area.physics.pickOverlapping(new Circle(player.physics.shape.getCenter(), 80));
+        const weapons = entities_in_range
+            .map((proxy) => proxy.reference)
+            .filter((entity): entity is Weapon => entity instanceof Weapon);
+        if (weapons.length <= 0) {
+            console.log('no weapons in range');
+            return;
+        }
+        const new_weapon = weapons[0];
+        // swap weapons
+        player.weapon = new_weapon;
+        current_area.removeEntity(new_weapon);
+        current_area.addEntity(old_weapon);
+        old_weapon.physics.shape.setCenter(player.physics.shape.getCenter());
     }
 
 }

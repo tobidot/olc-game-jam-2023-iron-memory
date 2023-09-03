@@ -6,6 +6,7 @@ import { registerAssets } from "./Assets";
 import { ViewName } from "../consts/ViewName";
 import { AreaController } from "../controllers/AreaController";
 import { WorldMapAreaBorder } from "../consts/Direction";
+import { AchievementController } from "../controllers/AchievementController";
 
 export class Game extends tgt.GameTemplate<
     GameModel,
@@ -14,6 +15,7 @@ export class Game extends tgt.GameTemplate<
 > {
     // Controllers
     protected area_controller!: AreaController;
+    protected achievement_controller!: AchievementController;
     //
     public on_game_finished: null | (() => void) = null;
 
@@ -27,7 +29,7 @@ export class Game extends tgt.GameTemplate<
             case ViewName.AREA:
                 return this.area_controller;
             case ViewName.ACHIEVEMENTS:
-                return this.area_controller;
+                return this.achievement_controller;
             case ViewName.INVENTORY:
                 return this.area_controller;
             case ViewName.MAIN_MENU:
@@ -44,7 +46,7 @@ export class Game extends tgt.GameTemplate<
             case ViewName.AREA:
                 return this.area_controller;
             case ViewName.ACHIEVEMENTS:
-                return this.area_controller;
+                return this.achievement_controller;
             case ViewName.INVENTORY:
                 return this.area_controller;
             case ViewName.MAIN_MENU:
@@ -66,6 +68,7 @@ export class Game extends tgt.GameTemplate<
         this.model = new GameModel(this, context);
         this.controller = new GameController(this);
         this.area_controller = new AreaController(this);
+        this.achievement_controller = new AchievementController(this);
         return this;
     }
 

@@ -6,6 +6,7 @@ import { Collision, PhysicsProxiable, PhysicsProxy } from "../../library/physics
 import { SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
+import { WeaponAchievement } from "../consts/WeaponAchievements";
 import { Agent } from "./Agent";
 import { AttackAttributes } from "./AttackAttributes";
 import { Weapon } from "./Weapon";
@@ -60,6 +61,7 @@ export class Hero extends Agent {
             this.game.model.world_map.active_area_coordinate.y,
         );
         // drop the weapon here
+        this.weapon.increase(WeaponAchievement.SOUL, 1);
         current_area.entities.push(this.weapon);
         this.weapon.physics.shape.setCenter(this.physics.shape.getCenter());
         // move to the starting area
@@ -70,11 +72,18 @@ export class Hero extends Agent {
         this.game.controller.travelTo(starting_area);
     }
 
+    public onKill(other: Agent) {
+        // do nothing
+        this.weapon.increase(WeaponAchievement.FIRST_KILL, 1);
+        this.weapon.increase(WeaponAchievement.FIRST_10_KILL, 1);
+        this.weapon.increase(WeaponAchievement.FIRST_100_KILL, 1);
+    }
+
     public getHeavyAttackStruct(): AttackAttributes {
-        return this.weapon.modifyHeavyAttack(this.heavy_attack);
+        return this.weapon.modifyHeavyAttack(this.heavy_attack.cpy());
     }
 
     public getLightAttackStruct(): AttackAttributes {
-        return this.weapon.modifyLightAttack(this.light_attack);
+        return this.weapon.modifyLightAttack(this.light_attack.cpy());
     }
 }

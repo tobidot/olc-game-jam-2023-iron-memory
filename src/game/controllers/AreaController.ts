@@ -50,6 +50,8 @@ export class AreaController extends BaseController {
             case KeyName.ArrowRight:
             case KeyName.KeyD:
                 return this.game.controller.playerUpdateMovement();
+                case KeyName.Space:
+                    this.game.controller.swapWeapon();
         }
         super.onKeyUp(event);
     }

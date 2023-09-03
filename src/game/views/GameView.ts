@@ -16,11 +16,11 @@ export class GameView extends GameBaseView implements View {
         font_family: "monospace",
         font_size_text: 16,
     };
-    protected menu_view: MenuView;
-    protected inventory_view: InventoryView;
-    protected achievement_view: AchievementView;
-    protected map_view: MapView;
-    protected area_view: AreaView;
+    public menu_view: MenuView;
+    public inventory_view: InventoryView;
+    public achievement_view: AchievementView;
+    public map_view: MapView;
+    public area_view: AreaView;
 
     public constructor(
         public context: CanvasRenderingContext2D,

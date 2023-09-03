@@ -6,6 +6,8 @@ import { Effect, EffectImageName } from "../models/Effect";
 import { ImageAsset } from "../../library";
 import { Rect } from "../../library/math/Rect";
 import { Obstacle, ObstacleImageName } from "../models/Obstacle";
+import { weapon_achievement_descriptions } from "../consts/WeaponAchievements";
+import { Vector2D } from "../../library/math";
 
 /**
  * The area view renders the walkable area and all entities in it
@@ -28,6 +30,35 @@ export class AreaView {
      */
     public render(model: GameModel): void {
         this.render_entities(model);
+        this.renderLatestAchievement(model);
+    }
+
+    public renderLatestAchievement(model: GameModel) {
+
+        // render latest achievement
+        const hero = model.walkable_area.hero;
+        if (!hero) {
+            return;
+        }
+        const weapon = hero.weapon;
+        if (!weapon) {
+            return;
+        }
+        const achievement = weapon.latest_achievement;
+        if (achievement === null) {
+            return;
+        }
+        const description = weapon_achievement_descriptions.get(achievement);
+        if (!description) {
+            return;
+        }
+        const text = description.label;
+        const position = new Vector2D(10, 600 - 10);
+        this.context.save();
+        this.context.fillStyle = "#fff";
+        this.context.textAlign = "left";
+        this.context.fillText(text, position.x, position.y);
+        this.context.restore();
     }
 
     /**
@@ -86,7 +117,7 @@ export class AreaView {
         this.renderImage(rect, image);
 
         // render life bar
-        const life_bar =  Rect.fromLeftTopWidthHeight(
+        const life_bar = Rect.fromLeftTopWidthHeight(
             rect.left,
             rect.top - 5,
             rect.width * agent.hitpoints / agent.max_hitpoints,

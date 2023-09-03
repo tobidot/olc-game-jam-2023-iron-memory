@@ -11,6 +11,6 @@ export class AttackAttributes {
     }
 
     public cpy(): AttackAttributes {
-        return new AttackAttributes(this.damage, this.attack_width, this.attack_range, this.cooldown_seconds, this.channel_seconds);
+        return new AttackAttributes(this.damage.cpy(), this.attack_width, this.attack_range, this.cooldown_seconds, this.channel_seconds);
     }
 }

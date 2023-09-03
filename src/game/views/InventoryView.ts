@@ -18,6 +18,6 @@ export class InventoryView {
      * @param model 
      */
     public render(model: GameModel): void {
-
+        
     }
 }

@@ -119,10 +119,15 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
         if (this.hitpoints <= 0) {
             this.is_dead = true;
             this.onDeath();
+            damage.source.onKill(this);
         }
     }
 
     public onDeath() {
+
+    }
+
+    public onKill(other: Agent) {
 
     }
 

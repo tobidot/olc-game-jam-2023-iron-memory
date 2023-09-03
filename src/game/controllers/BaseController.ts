@@ -23,7 +23,14 @@ export class BaseController implements KeyboardController, MouseController {
         switch (event.key.name) {
             case KeyName.Escape:
                 this.switchView(ViewName.AREA);
-                break;                
+                break;
+            case KeyName.KeyM:
+                this.switchView(ViewName.WORLD_MAP);
+                break;
+            case KeyName.KeyI:
+            case KeyName.Tab:
+                this.switchView(ViewName.ACHIEVEMENTS);
+                break;
             case KeyName.KeyO:
                 if (is_control_down) {
                     // cheat reveal map

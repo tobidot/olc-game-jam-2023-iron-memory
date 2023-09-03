@@ -94,7 +94,8 @@ export class WorldMap {
             [WorldMapAreaType.MOUNTAIN]: 10,
             [WorldMapAreaType.VILLAGE]: 0,
         }[area_type]);
-        const entity_count = Math.floor(Math.random() * count) + 1;
+        const difficulty = (x - this.size.x / 2) ** 2 + (y - this.size.y / 2) ** 2;
+        const entity_count = Math.floor(Math.random() * count * (1 + difficulty / 10)) + 1;
 
         const spawn_area = Rect.fromCenterAndSize(
             this.game.model.walkable_area.area.center.cpy(),
@@ -163,7 +164,7 @@ export class WorldMap {
             this.game.model.walkable_area.area.size.cpy().mul(0.5)
         );
         this.game.model.world_map.areas.forEach(area => {
-            area.entities.forEach((entity)=>{
+            area.entities.forEach((entity) => {
                 if (entity instanceof Agent) {
                     entity.is_dead = false;
                     entity.hitpoints = entity.max_hitpoints;
@@ -217,10 +218,10 @@ export class WorldMap {
             throw new Error(`Invalid travel position ${next_area_position.x}:${next_area_position.y}`);
         }
         const next_area = this.at(next_area_position.x, next_area_position.y);
-        return this.travelTo(next_area,border);
+        return this.travelTo(next_area, border);
     }
 
-    public travelTo(new_area: WorldMapArea, from : WorldMapAreaBorder): WorldMapArea {
+    public travelTo(new_area: WorldMapArea, from: WorldMapAreaBorder): WorldMapArea {
         this.active_area_coordinate.set(new_area.position);
         // discover next area
         new_area.open_borders.forEach((is_open, border) => {
