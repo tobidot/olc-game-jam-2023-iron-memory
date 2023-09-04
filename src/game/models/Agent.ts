@@ -39,6 +39,9 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
     // attack
     public light_attack: AttackAttributes = new AttackAttributes(new AttackDamage(this));
     public heavy_attack: AttackAttributes = new AttackAttributes(new AttackDamage(this));
+    public special_attack_1: AttackAttributes = new AttackAttributes(new AttackDamage(this));
+    public special_attack_2: AttackAttributes = new AttackAttributes(new AttackDamage(this));
+    public special_attack_3: AttackAttributes = new AttackAttributes(new AttackDamage(this));
     public cooldown: number = 0;
     public channel: null | ChannelAction = null;
     // physics properties

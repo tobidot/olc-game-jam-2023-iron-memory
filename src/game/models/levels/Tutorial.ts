@@ -1,14 +1,9 @@
-import { Asset } from "../../../library";
 import { Vector2D } from "../../../library/math";
-import { Rect } from "../../../library/math/Rect";
-import { Assets } from "../../base/Assets";
 import { Game } from "../../base/Game";
 import { WorldMapAreaBorder } from "../../consts/Direction";
 import { EnemyType } from "../../consts/EnemyType";
 import { WorldMapAreaType } from "../../consts/WorldMapAreaType";
-import { Agent } from "../Agent";
 import { Info } from "../Info";
-import { WorldMap, WorldMapArea } from "../WorldMap";
 import { WorldMapLevelDefinition, generateObstacles, loadWorldFromObject, mapCheck, setStartingPosition } from "./LevelHelper";
 
 export function loadTutorial(
@@ -102,7 +97,7 @@ function getDefinition(): WorldMapLevelDefinition {
     const enemy_boss = [
         { type: EnemyType.HOB_GOBLIN, count: 1 },
         { type: EnemyType.GOBLIN, count: 2 },
-        ...[...new Array(5)].map((_, index)=> Object.assign({position: new Vector2D(575, 150 + index * 75), }, sign_boss)),
+        ...[...new Array(5)].map((_, index)=> Object.assign({position: new Vector2D(575, 150 + index * 80), }, sign_boss)),
     ];
     const village_enemies = [
         sign_main_attack,

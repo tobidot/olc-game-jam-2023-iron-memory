@@ -1,10 +1,19 @@
 import { AssetManager } from "../../library";
 // area
-import player from "../../../assets/images/area/player.png";
+import player from "../../../assets/images/area/warrior.png";
 import obstacle from "../../../assets/images/area/obstacle.png";
-import enemy from "../../../assets/images/area/enemy.png";
 import slash from "../../../assets/images/area/slash.png";
 import sword from "../../../assets/images/area/sword.png";
+import imp from "../../../assets/images/area/imp.png";
+import enemy from "../../../assets/images/area/enemy.png";
+import goblin from "../../../assets/images/area/goblin.png";
+import spider from "../../../assets/images/area/spider.png";
+import hob_goblin from "../../../assets/images/area/hob_goblin.png";
+import orc from "../../../assets/images/area/orc.png";
+import troll from "../../../assets/images/area/troll.png";
+import demon from "../../../assets/images/area/demon.png";
+import lich from "../../../assets/images/area/lich.png";
+import dragon from "../../../assets/images/area/dragon.png";
 //
 import village_obstacle from "../../../assets/images/area/village_obstacle.png";
 import forrest_obstacle from "../../../assets/images/area/forrest_obstacle.png";
@@ -50,6 +59,15 @@ export const Assets = {
             dungeon_obstacle,
             gras_obstacle,
             village_obstacle,
+            imp,
+            goblin,
+            spider,
+            hob_goblin,
+            orc,
+            troll,
+            demon,
+            lich,
+            dragon,            
         },
         world_map: {
             dungeon,

@@ -19,7 +19,7 @@ export class HeroUnitFactory {
     public makeSwordsman(
         position: Vector2D,
     ) {
-        const size = 32;
+        const size = 64;
         const shape = new Circle(position, size / 2);
         const entity = new Hero(
             this.game,
@@ -28,15 +28,15 @@ export class HeroUnitFactory {
             true,
         );
         entity.max_hitpoints = entity.hitpoints = 40;
-        entity.movement_speed = 200;
+        entity.movement_speed = 400;
         
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 4, 0, 0, 0),
-            40, 100, 0.5, 0
+            64, 120, 0.5, 0
         );
         entity.heavy_attack =  new AttackAttributes(
             new AttackDamage(entity, 20, 0, 0, 0),
-            60, 60, 0.5, 0.5
+            96, 96, 0.5, 0.5
         );
         return entity;
     }

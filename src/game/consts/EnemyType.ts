@@ -1,8 +1,10 @@
 export enum EnemyType {
     DUMMY,
     INFO,
-    SPIDER,
     GOBLIN,
+    SPIDER,
+    IMP,
+    // bosses
     HOB_GOBLIN,
     ORC,
     TROLL,

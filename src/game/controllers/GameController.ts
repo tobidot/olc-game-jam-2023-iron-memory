@@ -203,27 +203,29 @@ export class GameController extends BaseController {
             agent.physics.velocity.set({ x: 0, y: 0 });
             agent.channel = {
                 delay_seconds: channel_seconds,
-                callback: this.getAttackCallback(agent, direction, attack_width, attack_range, damage, cooldown_seconds),
+                callback: this.getAttackCallback(agent, direction, attack),
             };
         } else {
-            this.getAttackCallback(agent, direction, attack_width, attack_range, damage, cooldown_seconds)(agent);
+            this.getAttackCallback(agent, direction, attack)(agent);
         }
     }
 
     public getAttackCallback(
         source: Agent,
         direction: Vector2D,
-        attack_width: number,
-        attack_range: number,
-        damage: AttackDamage,
-        cooldown: number,
+        attack: AttackAttributes,
     ) {
+        const { cooldown_seconds, attack_width, attack_range, damage, on_hit, on_cast } = attack;
         return (agent: Agent) => {
             if (agent.is_dead) {
                 return;
             }
             // set the cooldown
-            source.cooldown = cooldown;
+            source.cooldown = cooldown_seconds;
+
+            if (on_cast) {
+                on_cast(attack);
+            }
 
             // add the visual effect
             const player_center = source.physics.shape.getCenter();
@@ -249,6 +251,9 @@ export class GameController extends BaseController {
                 .filter((entity): entity is Agent => entity instanceof Agent && (entity.is_player !== agent.is_player || entity.is_neutral));
             enemies.forEach((enemy) => {
                 enemy.applyDamage(damage);
+                if (on_hit) {
+                    on_hit(attack, enemy);
+                }
             });
 
             this.playerUpdateMovement();
@@ -299,12 +304,12 @@ export class GameController extends BaseController {
             case GameLevel.CAMPAIGN_2: loadCampaign2(this.game); break;
             case GameLevel.CAMPAIGN_3: loadCampaign3(this.game); break;
             case GameLevel.CAMPAIGN_4: loadCampaign4(this.game); break;
-            case GameLevel.RANDOM_SMALL: loadRandom(this.game, new Vector2D(5,5)); break;
-            case GameLevel.RANDOM_MEDIUM: loadRandom(this.game, new Vector2D(9,7)); break;
-            case GameLevel.RANDOM_LARGE: loadRandom(this.game, new Vector2D(16,9)); break;
-            case GameLevel.RANDOM_BIG: loadRandom(this.game, new Vector2D(20,15)); break;
-            case GameLevel.RANDOM_HUGE: loadRandom(this.game, new Vector2D(32,24)); break;
-            default : throw new Error("Unknown level: " + level);
+            case GameLevel.RANDOM_SMALL: loadRandom(this.game, new Vector2D(5, 5)); break;
+            case GameLevel.RANDOM_MEDIUM: loadRandom(this.game, new Vector2D(9, 7)); break;
+            case GameLevel.RANDOM_LARGE: loadRandom(this.game, new Vector2D(16, 9)); break;
+            case GameLevel.RANDOM_BIG: loadRandom(this.game, new Vector2D(20, 15)); break;
+            case GameLevel.RANDOM_HUGE: loadRandom(this.game, new Vector2D(32, 24)); break;
+            default: throw new Error("Unknown level: " + level);
         }
     }
 

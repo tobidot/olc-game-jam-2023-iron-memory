@@ -229,7 +229,14 @@ function loadAreaFromObject(
                 switch (entity_definition.type) {
                     case EnemyType.INFO: return info_factory.makeInfo(position, entity_definition.info || []);
                     case EnemyType.GOBLIN: return factory.makeGoblin(position);
+                    case EnemyType.SPIDER: return factory.makeSpider(position);
+                    case EnemyType.IMP: return factory.makeImp(position);
                     case EnemyType.HOB_GOBLIN: return factory.makeHobGoblin(position);
+                    case EnemyType.ORC: return factory.makeOrc(position);
+                    case EnemyType.TROLL: return factory.makeTroll(position);
+                    case EnemyType.LICH: return factory.makeLich(position);
+                    case EnemyType.DEMON: return factory.makeDemon(position);
+                    case EnemyType.DRAGON: return factory.makeDragon(position);
                     default: throw new Error(`Invalid entity type ${entity_definition.type}`);
                 }
             })();
