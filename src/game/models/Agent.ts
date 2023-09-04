@@ -104,8 +104,8 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
         // display damage for all damage types
         const types = [physical, psy, ice, fire];
         const colors = ["white", "hotpink", "aqua", "orange"];
-        types.forEach((damage, index) => {
-            if (damage > 0) {
+        types.map((damage, index) => {
+            if (damage > 0 || index === 0) {
                 const position = this.physics.shape.getCenter().cpy().add(new Vector2D(index * 10, -20));
                 const effect = this.game.model.effect_factory.makeDamageText(
                     position,
@@ -113,7 +113,9 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
                     colors[index],
                 );
                 this.game.model.walkable_area.addEntity(effect);
+                return true;
             }
+            return false;
         });
 
         if (this.hitpoints <= 0) {

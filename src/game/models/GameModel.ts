@@ -70,7 +70,16 @@ export class GameModel implements tgt.Model {
         // main menu
         button_generator.set("width", 200)
         const main_menu = [
-            button_generator.set("x", 300).set("y", 135).make(MenuButtonName.NEW_GAME, "New Game"),
+            button_generator.set("x", 300).set("y", 125).make(MenuButtonName.LEVEL_TUTORIAL, "Tutorial"),
+            button_generator.set("x", 300).set("y", 165).make(MenuButtonName.LEVEL_CAMPAIGN_1, "Level 1"),
+            button_generator.set("x", 300).set("y", 195).make(MenuButtonName.LEVEL_CAMPAIGN_2, "Level 2"),
+            button_generator.set("x", 300).set("y", 225).make(MenuButtonName.LEVEL_CAMPAIGN_3, "Level 3"),
+            button_generator.set("x", 300).set("y", 255).make(MenuButtonName.LEVEL_CAMPAIGN_4, "Level 4"),
+            button_generator.set("x", 300).set("y", 295).make(MenuButtonName.LEVEL_RANDOM_SMALL, "Small Random Level"),
+            button_generator.set("x", 300).set("y", 325).make(MenuButtonName.LEVEL_RANDOM_MEDIUM, "Medium Random Level"),
+            button_generator.set("x", 300).set("y", 355).make(MenuButtonName.LEVEL_RANDOM_BIG, "Large Random Level"),
+            button_generator.set("x", 300).set("y", 385).make(MenuButtonName.LEVEL_RANDOM_BIG, "Big Random Level"),
+            button_generator.set("x", 300).set("y", 415).make(MenuButtonName.LEVEL_RANDOM_HUGE, "Huge Random Level"),
             // button_generator.set("x", 300).set("y", 165).make(MenuButtonName.TOGGLE_MUSIC, "Toggle Music"),
             // button_generator.set("x", 300).set("y", 195).make(MenuButtonName.TOGGLE_SOUND, "Toggle Sound"),
         ];
@@ -86,13 +95,12 @@ export class GameModel implements tgt.Model {
     public reset() {
         this.walkable_area.clear();
         this.walkable_area.hero = this.walkable_area.addEntity(this.hero_factory.makeSwordsman(new Vector2D(400,300)));
-        this.world_map.generateWorld();
     }
 
     public resetAfterDeath() {
         this.walkable_area.clear();
         this.walkable_area.hero = this.walkable_area.addEntity(this.hero_factory.makeSwordsman(new Vector2D(400,300)));
-        this.world_map.populateWorld();
+        this.world_map.repopulateWorld();
     }
 
     public update(delta_seconds: number): void {        

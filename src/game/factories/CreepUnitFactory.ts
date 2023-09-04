@@ -28,11 +28,37 @@ export class CreepUnitFactory {
             false,
         );
         entity.max_hitpoints = entity.hitpoints = 6;
-        entity.movement_speed = 140;
-        entity.hitpoints = 6;
+        entity.movement_speed = 150;
+        entity.hitpoints = 8;
         entity.heavy_attack = entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 4, 0, 0, 0),
             32, 32, 0.3, 0
+        );
+        // entity.
+        return entity;
+    }
+
+    public makeHobGoblin(
+        position: Vector2D,
+    ) {
+        const size = 22;
+        const shape = new Circle(position, size / 2);
+        const entity = new AiAgent(
+            this.game,
+            shape,
+            this.getImageSet('goblin'),
+            false,
+        );
+        entity.max_hitpoints = entity.hitpoints = 30;
+        entity.physical_resistance = 8;
+        entity.movement_speed = 110;
+        entity.light_attack = new AttackAttributes(
+            new AttackDamage(entity, 6, 0, 0, 0),
+            32, 32, 0.3, 0
+        );
+        entity.heavy_attack = entity.light_attack = new AttackAttributes(
+            new AttackDamage(entity, 25, 0, 0, 0),
+            80, 80, 0.5, 1
         );
         // entity.
         return entity;

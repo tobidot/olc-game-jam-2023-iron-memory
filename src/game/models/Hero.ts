@@ -65,10 +65,7 @@ export class Hero extends Agent {
         current_area.entities.push(this.weapon);
         this.weapon.physics.shape.setCenter(this.physics.shape.getCenter());
         // move to the starting area
-        const starting_area = this.game.model.world_map.at(
-            Math.floor(this.game.model.world_map.size.x / 2),
-            Math.floor(this.game.model.world_map.size.y / 2),
-        );
+        const starting_area = this.game.model.world_map.getStartingArea();
         this.game.controller.travelTo(starting_area);
     }
 

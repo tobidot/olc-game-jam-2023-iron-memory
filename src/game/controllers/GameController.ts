@@ -5,6 +5,7 @@ import { Circle } from "../../library/math/Circle";
 import { ConvexPolygone } from "../../library/math/ConvexPolygone";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
+import { GameLevel } from "../consts/GameLevel";
 import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 import { WeaponAchievement } from "../consts/WeaponAchievements";
@@ -14,6 +15,12 @@ import { AttackDamage } from "../models/AttackDamage";
 import { Hero } from "../models/Hero";
 import { Weapon } from "../models/Weapon";
 import { WorldMapArea } from "../models/WorldMap";
+import { loadCampaign1 } from "../models/levels/Campaign1";
+import { loadCampaign2 } from "../models/levels/Campaign2";
+import { loadCampaign3 } from "../models/levels/Campaign3";
+import { loadCampaign4 } from "../models/levels/Campaign4";
+import { loadRandom } from "../models/levels/Random";
+import { loadTutorial } from "../models/levels/Tutorial";
 import { BaseController } from "./BaseController";
 
 export class GameController extends BaseController {
@@ -24,18 +31,6 @@ export class GameController extends BaseController {
         super(game);
     }
 
-    /**
-     * Start a new game
-     */
-    public newGame(): ControllerResponse {
-        this.game.model.reset();
-        const starting_area = this.game.model.world_map.at(
-            this.game.model.world_map.active_area_coordinate.x,
-            this.game.model.world_map.active_area_coordinate.y
-        );
-        this.travelTo(starting_area);
-        return null;
-    }
 
     public isGameOver(): boolean {
         return false;
@@ -58,7 +53,15 @@ export class GameController extends BaseController {
             case MenuButtonName.WORLD_MAP: this.switchView(ViewName.WORLD_MAP); break;
             case MenuButtonName.MAIN_MENU: this.switchView(ViewName.MAIN_MENU); break;
             case MenuButtonName.GAME: this.switchView(ViewName.AREA); break;
-            case MenuButtonName.NEW_GAME: this.newGame(); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_RANDOM_SMALL: this.loadLevel(GameLevel.RANDOM_SMALL); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_RANDOM_MEDIUM: this.loadLevel(GameLevel.RANDOM_MEDIUM); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_RANDOM_BIG: this.loadLevel(GameLevel.RANDOM_BIG); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_RANDOM_HUGE: this.loadLevel(GameLevel.RANDOM_HUGE); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_TUTORIAL: this.loadLevel(GameLevel.TUTORIAL); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_CAMPAIGN_1: this.loadLevel(GameLevel.CAMPAIGN_1); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_CAMPAIGN_2: this.loadLevel(GameLevel.CAMPAIGN_2); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_CAMPAIGN_3: this.loadLevel(GameLevel.CAMPAIGN_3); this.switchView(ViewName.AREA); break;
+            case MenuButtonName.LEVEL_CAMPAIGN_4: this.loadLevel(GameLevel.CAMPAIGN_4); this.switchView(ViewName.AREA); break;
             default: console.log("Unknown menu item selected: " + item.name); break;
         }
     }
@@ -274,5 +277,36 @@ export class GameController extends BaseController {
         current_area.addEntity(old_weapon);
         old_weapon.physics.shape.setCenter(new_weapon.physics.shape.getCenter());
     }
+
+
+    /**
+     * Start a new game
+     */
+    public newGame(): ControllerResponse {
+        this.loadLevel(GameLevel.TUTORIAL);
+        return null;
+    }
+
+    /**
+     * Loads a new level
+     * @param level 
+     */
+    public loadLevel(level: GameLevel) {
+        this.game.model.reset();
+        switch (level) {
+            case GameLevel.TUTORIAL: loadTutorial(this.game); break;
+            case GameLevel.CAMPAIGN_1: loadCampaign1(this.game); break;
+            case GameLevel.CAMPAIGN_2: loadCampaign2(this.game); break;
+            case GameLevel.CAMPAIGN_3: loadCampaign3(this.game); break;
+            case GameLevel.CAMPAIGN_4: loadCampaign4(this.game); break;
+            case GameLevel.RANDOM_SMALL: loadRandom(this.game, new Vector2D(5,5)); break;
+            case GameLevel.RANDOM_MEDIUM: loadRandom(this.game, new Vector2D(9,7)); break;
+            case GameLevel.RANDOM_LARGE: loadRandom(this.game, new Vector2D(16,9)); break;
+            case GameLevel.RANDOM_BIG: loadRandom(this.game, new Vector2D(44,11)); break;
+            case GameLevel.RANDOM_HUGE: loadRandom(this.game, new Vector2D(48,13)); break;
+            default : throw new Error("Unknown level: " + level);
+        }
+    }
+
 
 }

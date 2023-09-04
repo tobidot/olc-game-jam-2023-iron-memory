@@ -8,6 +8,13 @@ import { WorldMapAreaType } from "../consts/WorldMapAreaType";
 import { WorldMapAreaBorder } from "../consts/Direction";
 
 export class MapView {
+    public precalculated_attributes = {
+        map_screen_width: 0,
+        map_screen_height: 0,
+        tile_width: 0,
+        tile_height: 0,
+        screen_offset: new Vector2D(0, 0),
+    };
 
     public constructor(
         public context: CanvasRenderingContext2D,
@@ -24,11 +31,37 @@ export class MapView {
      * @param model 
      */
     public render(model: GameModel): void {
+        this.preCalculateSizeAttributes(model);
         for (let x = 0; x < model.world_map.size.x; x++) {
             for (let y = 0; y < model.world_map.size.y; y++) {
                 this.renderTile(model, x, y, model.world_map.at(x, y));
             }
         }
+    }
+
+    /**
+     * Predeterine the size and scalings for the area fields
+     * @param model 
+     */
+    public preCalculateSizeAttributes(
+        model: GameModel
+    ) {
+        const map_screen_width = model.screen_resolution.x * 0.9;
+        const map_screen_height = (model.screen_resolution.y - 100) * 0.9;
+        const ratio = map_screen_width / map_screen_height;
+        const tile_width = Math.min(map_screen_width / model.world_map.size.x, map_screen_height / model.world_map.size.y);
+        const tile_height = Math.min(map_screen_height / model.world_map.size.y, map_screen_width / model.world_map.size.x);
+        const screen_offset = new Vector2D(
+            (map_screen_width - model.world_map.size.x * tile_width) / 2,
+            (map_screen_height - model.world_map.size.y * tile_height) / 2,
+        );
+        this.precalculated_attributes = {
+            map_screen_width,
+            map_screen_height,
+            tile_width,
+            tile_height,
+            screen_offset,
+        };
     }
 
     /**
@@ -58,14 +91,11 @@ export class MapView {
      */
     public determineScreenRectForTile(model: GameModel, x: number, y: number): Rect {
         // keeping a little space for the menu and a border
-        const map_screen_width = model.screen_resolution.x * 0.9;
-        const map_screen_height = (model.screen_resolution.y - 100) * 0.9;
-        const tile_width = map_screen_width / model.world_map.size.x;
-        const tile_height = map_screen_height / model.world_map.size.y;
+        const { tile_width, tile_height, screen_offset } = this.precalculated_attributes;
         const top_left = new Vector2D(
             x * tile_width + model.screen_resolution.x * 0.05,
             y * tile_height + (model.screen_resolution.y - 100) * 0.05 + 50,
-        );
+        ).add(screen_offset);
         return Rect.fromLeftTopWidthHeight(
             top_left.x,
             top_left.y,
