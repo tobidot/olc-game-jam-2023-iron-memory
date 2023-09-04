@@ -7,6 +7,7 @@ import { Agent } from "./Agent";
 import { Entity } from "./Entity";
 import { Physical } from "./Physical";
 import { Weapon } from "./Weapon";
+import { getMonsterSpawnPosition } from "./levels/LevelHelper";
 
 export class WorldMapArea {
     public discovered: boolean = false;
@@ -17,6 +18,7 @@ export class WorldMapArea {
         public open_borders: Map<WorldMapAreaBorder, boolean> = new Map([]),
         public type: WorldMapAreaType = WorldMapAreaType.GRAS,
         public entities: Array<Physical & Entity> = [],
+        public boss: boolean = false,
     ) {
 
     }
@@ -38,20 +40,19 @@ export class WorldMap {
      * Restores all enemies after player dies
      */
     public repopulateWorld() {
-        const spawn_area = Rect.fromCenterAndSize(
-            this.game.model.walkable_area.area.center.cpy(),
-            this.game.model.walkable_area.area.size.cpy().mul(0.5)
-        );
         this.game.model.world_map.areas.forEach(area => {
+            if (area.boss) {
+                // don't respawn boss
+                return;
+            }
             area.entities.forEach((entity) => {
                 if (entity instanceof Agent) {
                     entity.is_dead = false;
                     entity.hitpoints = entity.max_hitpoints;
-                    const position = new Vector2D(
-                        Math.floor(Math.random() * spawn_area.width) + spawn_area.left,
-                        Math.floor(Math.random() * spawn_area.height) + spawn_area.top
-                    );
-                    entity.physics.shape.setCenter(position);
+                    if (!entity.is_neutral) {
+                        const position = getMonsterSpawnPosition();
+                        entity.physics.shape.setCenter(position);
+                    }
                 }
             })
         });
@@ -132,6 +133,26 @@ export class WorldMap {
             area.discovered = true;
         });
         return new_area;
+    }
+
+
+    public isCleared(): boolean {
+        const boss_count = this.areas.reduce((sum, next) => {
+            if (!next.boss) {
+                return sum;
+            }
+            const alive_count = next.entities.reduce((sum, next) => {
+                if (!(next instanceof Agent) || next.is_dead || next.is_neutral || next.is_player ) {
+                    return sum;
+                }
+                return sum + 1;
+            }, 0);
+            if (alive_count === 0) {
+                return sum;
+            }
+            return sum + 1;
+        }, 0);
+        return boss_count === 0;
     }
 
 }

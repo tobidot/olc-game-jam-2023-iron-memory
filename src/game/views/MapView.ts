@@ -11,6 +11,8 @@ export class MapView {
     public precalculated_attributes = {
         map_screen_width: 0,
         map_screen_height: 0,
+        used_screen_width: 0,
+        used_screen_height: 0,
         tile_width: 0,
         tile_height: 0,
         screen_offset: new Vector2D(0, 0),
@@ -32,11 +34,28 @@ export class MapView {
      */
     public render(model: GameModel): void {
         this.preCalculateSizeAttributes(model);
+        this.renderBackground(model);
+        this.context.lineWidth = Math.max(2, Math.floor(40 / Math.max(model.world_map.size.x, model.world_map.size.y)));
         for (let x = 0; x < model.world_map.size.x; x++) {
             for (let y = 0; y < model.world_map.size.y; y++) {
                 this.renderTile(model, x, y, model.world_map.at(x, y));
             }
         }
+    }
+
+    /**
+     * Render the background of the map
+     * @param model 
+     */
+    public renderBackground(model: GameModel) {
+        this.context.strokeStyle = "#880";
+        this.context.lineWidth = (8);
+        const { screen_offset, used_screen_width, used_screen_height } = this.precalculated_attributes;
+        this.context.strokeRect(
+            screen_offset.x - 4, screen_offset.y - 4,
+            used_screen_width + 8,
+            used_screen_height + 8,
+        );
     }
 
     /**
@@ -51,13 +70,17 @@ export class MapView {
         const ratio = map_screen_width / map_screen_height;
         const tile_width = Math.min(map_screen_width / model.world_map.size.x, map_screen_height / model.world_map.size.y);
         const tile_height = Math.min(map_screen_height / model.world_map.size.y, map_screen_width / model.world_map.size.x);
-        const screen_offset = new Vector2D(
-            (map_screen_width - model.world_map.size.x * tile_width) / 2,
-            (map_screen_height - model.world_map.size.y * tile_height) / 2,
-        );
+        const used_screen_width = model.world_map.size.x * tile_width;
+        const used_screen_height = model.world_map.size.y * tile_height;
+        const screen_offset = model.screen_resolution.cpy()
+            .mul(0.5)
+            .add(new Vector2D(0, 30))
+            .sub(new Vector2D((used_screen_width / 2), (used_screen_height / 2),));
         this.precalculated_attributes = {
             map_screen_width,
             map_screen_height,
+            used_screen_width,
+            used_screen_height,
             tile_width,
             tile_height,
             screen_offset,
@@ -78,10 +101,14 @@ export class MapView {
         const rect = this.determineScreenRectForTile(model, x, y);
         this.renderImage(model, rect, tile);
         this.renderPath(model, rect, tile)
+        if (tile.boss) {
+            this.renderBoss(model, rect, tile);
+        }
         if (model.world_map.active_area_coordinate.x === x && model.world_map.active_area_coordinate.y === y) {
             this.renderSelectionHighlight(model, rect);
         }
     }
+
 
     /**
      * Calculate the screen rect for a tile 
@@ -93,8 +120,8 @@ export class MapView {
         // keeping a little space for the menu and a border
         const { tile_width, tile_height, screen_offset } = this.precalculated_attributes;
         const top_left = new Vector2D(
-            x * tile_width + model.screen_resolution.x * 0.05,
-            y * tile_height + (model.screen_resolution.y - 100) * 0.05 + 50,
+            x * tile_width,
+            y * tile_height,
         ).add(screen_offset);
         return Rect.fromLeftTopWidthHeight(
             top_left.x,
@@ -102,6 +129,18 @@ export class MapView {
             Math.ceil(tile_width),
             Math.ceil(tile_height)
         );
+    }
+
+    /**
+     * Indicate that this is a boss area
+     * @param model 
+     * @param rect 
+     * @param tile 
+     */
+    public renderBoss(model: GameModel, rect: Rect, tile: WorldMapArea) {
+        const image_name = Assets.images.world_map.boss;
+        const image_asset = model.game.assets.getImage(image_name);
+        this.context.drawImage(image_asset.image, rect.left, rect.top, rect.width, rect.height);
     }
 
     /**

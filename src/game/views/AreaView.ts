@@ -34,6 +34,7 @@ export class AreaView {
         this.renderBackground(model);
         this.renderEntities(model);
         this.renderLatestAchievement(model);
+        this.renderMapClear(model);
     }
 
     public renderBackground(model: GameModel) {
@@ -90,6 +91,26 @@ export class AreaView {
         this.context.fillText(text, position.x, position.y);
         this.context.restore();
     }
+    
+    /**
+     * Show a game won screen, as the map has been cleared
+     * @param model 
+     */
+    public renderMapClear(model: GameModel) {
+        if (!model.world_map.isCleared()) {
+            return;
+        }
+        const position = new Vector2D(400, 300);
+        this.context.save();
+        this.context.font = "32px Arial";
+        this.context.fillStyle = "#fff";
+        this.context.textAlign = "center";
+        this.context.fillText("You have cleared the map!", position.x, position.y);
+        this.context.fillText("All bosses are dead!", position.x, position.y + 30);
+        this.context.font = "18px Arial";
+        this.context.fillText("You can start the next level via the menu now", position.x, position.y + 60);
+        this.context.restore();        
+    }
 
     /**
      * Render the actual game state
@@ -130,8 +151,12 @@ export class AreaView {
             const image = effect.images.get(EffectImageName.DEFAULT);
             this.renderImage(effect.rect.cpy().move(effect.rect.center.cpy().mul(-1)), image);
         } else {
-            this.context.fillStyle = effect.images.color;
-            this.context.fillText(effect.images.text, -effect.rect.w / 2, -effect.rect.h / 2);
+            const color = effect.images.color;
+            const lines = effect.images.text.split('\n');
+            lines.forEach((line, index) => {
+                this.context.fillStyle = color;
+                this.context.fillText(line, -effect.rect.w / 2, -effect.rect.h / 2 + 20 * index - lines.length * 20);
+            });
         }
         this.context.restore();
     }

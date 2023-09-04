@@ -52,6 +52,19 @@ export class EffectFactory {
         return entity;
     }
 
+
+    public makeInfoText(position: Vector2D, text: string, color: string) : Effect {
+        const ttl = 10.0;
+        const entity = new Effect(
+            this.game,
+            Rect.fromCenterAndSize(position, { x: 0, y: 0 }),
+            - Math.PI / 2,
+            { text, color },
+            ttl
+        );
+        return entity;
+    }
+
     public getImageSet(type: keyof typeof image_sets): Map<EffectImageName, ImageAsset> {
         const images = image_sets[type]
             .map(

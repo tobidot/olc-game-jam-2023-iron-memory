@@ -5,7 +5,7 @@ import { WorldMapAreaBorder } from "../../consts/Direction";
 import { WorldMapAreaType } from "../../consts/WorldMapAreaType";
 import { Agent } from "../Agent";
 import { WorldMap, WorldMapArea } from "../WorldMap";
-import { generateObstacles, mapCheck, setStartingPosition } from "./LevelHelper";
+import { generateObstacles, getMonsterSpawnPosition, mapCheck, setStartingPosition } from "./LevelHelper";
 
 export function loadRandom(
     game: Game,
@@ -85,15 +85,8 @@ function generateArea(
     const difficulty = (x - world_map.size.x / 2) ** 2 + (y - world_map.size.y / 2) ** 2;
     const entity_count = Math.floor(Math.random() * count * (1 + difficulty / 10)) + 1;
 
-    const spawn_area = Rect.fromCenterAndSize(
-        world_map.game.model.walkable_area.area.center.cpy(),
-        world_map.game.model.walkable_area.area.size.cpy().mul(0.5)
-    );
     for (let i = 0; i < entity_count; i++) {
-        const position = new Vector2D(
-            Math.floor(Math.random() * spawn_area.width) + spawn_area.left,
-            Math.floor(Math.random() * spawn_area.height) + spawn_area.top
-        );
+        const position = getMonsterSpawnPosition();
         const entity = world_map.game.model.creep_factory.makeGoblin(position);
         area.entities.push(entity);
     }

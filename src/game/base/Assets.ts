@@ -17,13 +17,16 @@ import forrest_background from "../../../assets/images/area/forrest_background.p
 import mountain_background from "../../../assets/images/area/mountain_background.png";
 import dungeon_background from "../../../assets/images/area/dungeon_background.png";
 import gras_background from "../../../assets/images/area/gras_background.png";
+// 
+import hit_me from "../../../assets/images/area/info_hit_me.png";
 // world_map
 import dungeon from "../../../assets/images/world_map/dungeon.png";
 import forrest from "../../../assets/images/world_map/forrest.png";
 import gras from "../../../assets/images/world_map/gras.png"; 
 import mountain from "../../../assets/images/world_map/mountain.png";
 import village from "../../../assets/images/world_map/village.png";
-
+import boss from "../../../assets/images/world_map/boss.png";
+ 
 export const Assets = {
     images: {
         background: {
@@ -32,6 +35,9 @@ export const Assets = {
             mountain_background,
             dungeon_background,
             gras_background,
+        },
+        info: {
+            hit_me,
         },
         area: {
             player,
@@ -51,6 +57,7 @@ export const Assets = {
             forrest,
             gras,
             village,
+            boss,
         },
     },
     sounds: {

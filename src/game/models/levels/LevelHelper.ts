@@ -20,7 +20,7 @@ export function setStartingPosition(game: Game, world_map: WorldMap, position: V
     const starting_area = game.model.world_map.at(position);
     starting_area.type = WorldMapAreaType.VILLAGE;
     starting_area.discovered = true;
-    starting_area.entities = starting_area.entities.filter(entity => !(entity instanceof Agent) || (!!entity.is_player));
+    starting_area.entities = starting_area.entities.filter(entity => !(entity instanceof Agent) || (!!entity.is_player || entity.is_neutral));
 
     // reveal neighbours
     starting_area.open_borders.forEach((is_open, border) => {
@@ -89,16 +89,6 @@ export function generateObstacle(
         const direction = world_map.getBorderOffset(border);
         const left = direction.cpy().mul({ x: height, y: width }).rotate(-Math.PI / 2).mul(0.5);
         const right = direction.cpy().mul({ x: height, y: width }).rotate(Math.PI / 2).mul(0.5);
-        const area_types = [area.type, border_area.type];
-        const make_obstacle = (position: Vector2D) => {
-            switch (area_types[(Math.floor(Math.random() * 2))]) {
-                case WorldMapAreaType.DUNGEON: return world_map.game.model.obstacle_factory.makeDungeon(position);
-                case WorldMapAreaType.FORREST: return world_map.game.model.obstacle_factory.makeForrest(position);
-                case WorldMapAreaType.GRAS: return world_map.game.model.obstacle_factory.makeGras(position);
-                case WorldMapAreaType.MOUNTAIN: return world_map.game.model.obstacle_factory.makeMountain(position);
-                case WorldMapAreaType.VILLAGE: return world_map.game.model.obstacle_factory.makeVillage(position);
-            }
-        }
         // pointing to the center at the edge of the border
         const target_center = direction.cpy()
             .add(walkable_area.center)
@@ -106,6 +96,17 @@ export function generateObstacle(
             .add(direction.cpy().mul({ x: width, y: height }).mul(-0.5));
         const target_rect = Rect.fromCenterAndSize(target_center, { x: width, y: height });
         if (is_open) {
+
+            const area_types = [area.type, border_area.type];
+            const make_obstacle = (position: Vector2D) => {
+                switch (area_types[(Math.floor(Math.random() * 2))]) {
+                    case WorldMapAreaType.DUNGEON: return world_map.game.model.obstacle_factory.makeDungeon(position);
+                    case WorldMapAreaType.FORREST: return world_map.game.model.obstacle_factory.makeForrest(position);
+                    case WorldMapAreaType.GRAS: return world_map.game.model.obstacle_factory.makeGras(position);
+                    case WorldMapAreaType.MOUNTAIN: return world_map.game.model.obstacle_factory.makeMountain(position);
+                    case WorldMapAreaType.VILLAGE: return world_map.game.model.obstacle_factory.makeVillage(position);
+                }
+            }
             for (let i = -3; i < -2; i++) {
                 const position = target_center.cpy()
                     .add(left.cpy().mul(i / 4 + Math.random() * 0.05))
@@ -123,6 +124,15 @@ export function generateObstacle(
             return;
         }
         for (let i = -3; i <= 3; i++) {
+            const make_obstacle = (position: Vector2D) => {
+                switch (area.type) {
+                    case WorldMapAreaType.DUNGEON: return world_map.game.model.obstacle_factory.makeDungeon(position);
+                    case WorldMapAreaType.FORREST: return world_map.game.model.obstacle_factory.makeForrest(position);
+                    case WorldMapAreaType.GRAS: return world_map.game.model.obstacle_factory.makeGras(position);
+                    case WorldMapAreaType.MOUNTAIN: return world_map.game.model.obstacle_factory.makeMountain(position);
+                    case WorldMapAreaType.VILLAGE: return world_map.game.model.obstacle_factory.makeVillage(position);
+                }
+            }
             const position = target_center.cpy()
                 .add(left.cpy().mul(i / 4 + Math.random() * 0.05))
                 .add(direction.cpy().mul(Math.random() * 100 - 50));
@@ -148,12 +158,14 @@ export interface WorldMapLevelDefinition {
 export interface WorldMapLevelAreaDefinition {
     type: WorldMapAreaType,
     open_borders: number,
+    boss?: boolean,
     x?: number,
     y?: number,
     entities: {
         type: EnemyType,
         count?: number,
-        info?: string,
+        position?: Vector2D;
+        info?: Array<string>,
     }[],
 }
 
@@ -179,7 +191,7 @@ export function loadWorldFromObject(
             }
             world_map.areas.push(loadAreaFromObject(game, world_map, x, y, area_definition));
         }
-    }    
+    }
     setStartingPosition(game, game.model.world_map, definition.start);
 }
 
@@ -210,13 +222,12 @@ function loadAreaFromObject(
         const count = entity_definition.count || 1;
         const entities: Array<Agent> = [];
         for (let i = 0; i < count; i++) {
-            const position = new Vector2D(
-                Math.floor(Math.random() * 400 + 200),
-                Math.floor(Math.random() * 350 + 125),
-            );
+            const position = entity_definition.position ?? getMonsterSpawnPosition();
+            const info_factory = game.model.info_factory;
             const factory = game.model.creep_factory;
             const entity = (() => {
                 switch (entity_definition.type) {
+                    case EnemyType.INFO: return info_factory.makeInfo(position, entity_definition.info || []);
                     case EnemyType.GOBLIN: return factory.makeGoblin(position);
                     case EnemyType.HOB_GOBLIN: return factory.makeHobGoblin(position);
                     default: throw new Error(`Invalid entity type ${entity_definition.type}`);
@@ -231,6 +242,7 @@ function loadAreaFromObject(
         borders,
         definition.type,
         entities,
+        definition.boss || false,
     );
     return area;
 }
@@ -271,7 +283,7 @@ export function mapCheck(
                     // close the border to nowhere
                     area.open_borders.set(border, false);
                 } else {
-                    errors.push( new Error(`Invalid world map - area ${area.position.x}:${area.position.y} has invalid border to nowhere ${border} (${WorldMapAreaBorder[border]})`));
+                    errors.push(new Error(`Invalid world map - area ${area.position.x}:${area.position.y} has invalid border to nowhere ${border} (${WorldMapAreaBorder[border]})`));
                     return;
                 }
             }
@@ -282,7 +294,7 @@ export function mapCheck(
                     area.open_borders.set(border, true);
                     border_area.open_borders.set(opposite(border), true);
                 } else {
-                    errors.push( new Error(`Invalid world map - area ${area.position.x}:${area.position.y} has invalid border mismatch ${border} (${WorldMapAreaBorder[border]})`));
+                    errors.push(new Error(`Invalid world map - area ${area.position.x}:${area.position.y} has invalid border mismatch ${border} (${WorldMapAreaBorder[border]})`));
                 }
             }
             queue.push(border_area);
@@ -314,7 +326,7 @@ export function mapCheck(
                     const position = area.position.cpy();
                     while (!visited.has(`${position.x}:${position.y}`)) {
                         // open border 
-                        let border = get_border_towards_starting_area(world_map.starting_area_coordinate);
+                        let border = get_border_towards_starting_area(position);
                         const current_area = world_map.at(position);
                         current_area.open_borders.set(border, true);
                         // move towards the starting area and open the opposite area
@@ -332,4 +344,11 @@ export function mapCheck(
         console.error("Unreachable areas", unreachable);
         throw new Error(`Invalid world map - ${unreachable.length} areas are unreachable ${unreachable.map(area => `${area.position.x}:${area.position.y}`).join(", ")}`);
     }
+}
+
+export function getMonsterSpawnPosition() {
+    return new Vector2D(
+        Math.floor(Math.random() * 300 + 250),
+        Math.floor(Math.random() * 250 + 175),
+    );
 }

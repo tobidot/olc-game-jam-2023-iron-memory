@@ -246,7 +246,7 @@ export class GameController extends BaseController {
             // pick enemies in area
             const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_shape)
                 .map((proxy) => proxy.reference)
-                .filter((entity): entity is Agent => entity instanceof Agent && entity.is_player !== agent.is_player);
+                .filter((entity): entity is Agent => entity instanceof Agent && (entity.is_player !== agent.is_player || entity.is_neutral));
             enemies.forEach((enemy) => {
                 enemy.applyDamage(damage);
             });
@@ -302,8 +302,8 @@ export class GameController extends BaseController {
             case GameLevel.RANDOM_SMALL: loadRandom(this.game, new Vector2D(5,5)); break;
             case GameLevel.RANDOM_MEDIUM: loadRandom(this.game, new Vector2D(9,7)); break;
             case GameLevel.RANDOM_LARGE: loadRandom(this.game, new Vector2D(16,9)); break;
-            case GameLevel.RANDOM_BIG: loadRandom(this.game, new Vector2D(44,11)); break;
-            case GameLevel.RANDOM_HUGE: loadRandom(this.game, new Vector2D(48,13)); break;
+            case GameLevel.RANDOM_BIG: loadRandom(this.game, new Vector2D(20,15)); break;
+            case GameLevel.RANDOM_HUGE: loadRandom(this.game, new Vector2D(32,24)); break;
             default : throw new Error("Unknown level: " + level);
         }
     }
