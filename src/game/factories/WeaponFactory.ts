@@ -54,6 +54,6 @@ export class WeaponFactory {
 
 const image_sets = {
     sword: [
-        [AgentImageName.DEFAULT, Assets.images.area.slash],
+        [AgentImageName.DEFAULT, Assets.images.area.sword],
     ],
 } as const;

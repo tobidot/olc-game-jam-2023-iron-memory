@@ -95,5 +95,6 @@ export class Game extends tgt.GameTemplate<
             this.model.world_map.active_area_coordinate.y
         );
         this.controller.travelTo(starting_area);
+        this.controller.switchView(ViewName.AREA);
     }
 }

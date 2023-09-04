@@ -15,14 +15,52 @@ export class ObstacleFactory {
     ) {
     }
 
-    public makeTree(
-        position: Vector2D,
-    ) {
-        const rect = Rect.fromCenterAndSize(position.cpy(), { x: 32, y: 64 });
+    public makeGras(position: Vector2D) {
+        const rect = Rect.fromCenterAndSize(position.cpy(), { x: 92, y: 64 });
         const entity = new Obstacle(
             this.game,
             rect,
-            this.getImageSet('tree'),
+            this.getImageSet('gras'),
+        );
+        return entity;
+    }
+
+    public makeDungeon(position: Vector2D) {
+        const rect = Rect.fromCenterAndSize(position.cpy(), { x: 96, y: 96 });
+        const entity = new Obstacle(
+            this.game,
+            rect,
+            this.getImageSet('dungeon'),
+        );
+        return entity;
+    }
+
+    public makeMountain(position: Vector2D) {
+        const rect = Rect.fromCenterAndSize(position.cpy(), { x: 96, y: 128 });
+        const entity = new Obstacle(
+            this.game,
+            rect,
+            this.getImageSet('mountain'),
+        );
+        return entity;
+    }
+
+    public makeForrest(position: Vector2D) {
+        const rect = Rect.fromCenterAndSize(position.cpy(), { x: 64, y: 128 });
+        const entity = new Obstacle(
+            this.game,
+            rect,
+            this.getImageSet('forrest'),
+        );
+        return entity;
+    }
+
+    public makeVillage(position: Vector2D) {
+        const rect = Rect.fromCenterAndSize(position.cpy(), { x: 128, y: 128 });
+        const entity = new Obstacle(
+            this.game,
+            rect,
+            this.getImageSet('village'),
         );
         return entity;
     }
@@ -37,7 +75,19 @@ export class ObstacleFactory {
 }
 
 const image_sets = {
-    tree: [
-        [ObstacleImageName.DEFAULT, Assets.images.area.obstacle],
+    dungeon: [
+        [ObstacleImageName.DEFAULT, Assets.images.area.dungeon_obstacle],
+    ],
+    forrest: [
+        [ObstacleImageName.DEFAULT, Assets.images.area.forrest_obstacle],
+    ],
+    mountain: [
+        [ObstacleImageName.DEFAULT, Assets.images.area.mountain_obstacle],
+    ],
+    gras: [
+        [ObstacleImageName.DEFAULT, Assets.images.area.gras_obstacle],
+    ],
+    village: [
+        [ObstacleImageName.DEFAULT, Assets.images.area.village_obstacle],
     ],
 } as const;

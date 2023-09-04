@@ -51,7 +51,6 @@ export class GameController extends BaseController {
      * @param item 
      */
     public onMenuSelect(item: MenuModel): void {
-        console.log("Menu item selected: " + item.name);
         switch (item.name) {
             // top menu bar
             case MenuButtonName.ACHIEVEMENTS: this.switchView(ViewName.ACHIEVEMENTS); break;
@@ -59,7 +58,7 @@ export class GameController extends BaseController {
             case MenuButtonName.WORLD_MAP: this.switchView(ViewName.WORLD_MAP); break;
             case MenuButtonName.MAIN_MENU: this.switchView(ViewName.MAIN_MENU); break;
             case MenuButtonName.GAME: this.switchView(ViewName.AREA); break;
-            case MenuButtonName.NEW_GAME: this.newGame(); break;
+            case MenuButtonName.NEW_GAME: this.newGame(); this.switchView(ViewName.AREA); break;
             default: console.log("Unknown menu item selected: " + item.name); break;
         }
     }
@@ -273,7 +272,7 @@ export class GameController extends BaseController {
         player.weapon = new_weapon;
         current_area.removeEntity(new_weapon);
         current_area.addEntity(old_weapon);
-        old_weapon.physics.shape.setCenter(player.physics.shape.getCenter());
+        old_weapon.physics.shape.setCenter(new_weapon.physics.shape.getCenter());
     }
 
 }

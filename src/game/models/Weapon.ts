@@ -15,13 +15,14 @@ export class Weapon extends Agent {
         position: Vector2D,
         images: Map<AgentImageName, ImageAsset>,
     ) {
-        super(game, Rect.fromCenterAndSize(position, new Vector2D(10, 10)), images, false);
+        super(game, Rect.fromCenterAndSize(position, new Vector2D(32, 32)), images, false);
         this.is_neutral = true;
+        this.physics.fixed = true;
         this.achievement_progress = new Map([
             [WeaponAchievement.FIRST_KILL, new WeaponAchievementProgress(1)],
             [WeaponAchievement.FIRST_10_KILL, new WeaponAchievementProgress(10)],
             [WeaponAchievement.FIRST_100_KILL, new WeaponAchievementProgress(100)],
-            [WeaponAchievement.FIRST_DUMMY_KILL, new WeaponAchievementProgress(1)],
+            [WeaponAchievement.FIRST_DUMMY_KILL, new WeaponAchievementProgress(1)], 
             [WeaponAchievement.FIRST_SWORD_KILL, new WeaponAchievementProgress(1)],
             [WeaponAchievement.SOUL, new WeaponAchievementProgress(1)],
             [WeaponAchievement.VETERAN, new WeaponAchievementProgress(50)],

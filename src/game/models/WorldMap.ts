@@ -56,6 +56,12 @@ export class WorldMap {
             const area = this.at(position.x, position.y);
             area.discovered = true;
         });
+        
+        for (let y = 0; y < this.size.y; y++) {
+            for (let x = 0; x < this.size.x; x++) {
+                this.generateObstacles(x, y);
+            }
+        }
     }
 
     public generateArea(x: number, y: number): WorldMapArea {
@@ -110,6 +116,11 @@ export class WorldMap {
             area.entities.push(entity);
         }
 
+        return area;
+    }
+
+    public generateObstacles(x: number, y: number) {
+        const area = this.at(x, y);
         // spawn environment blocking the paths
         area.open_borders.forEach((is_open, border) => {
             const walkable_area = this.game.model.walkable_area.area;
@@ -119,10 +130,23 @@ export class WorldMap {
             const height = (border === WorldMapAreaBorder.NORTH || border === WorldMapAreaBorder.SOUTH)
                 ? 75
                 : walkable_area.height;
+            const border_position = this.getBorderPosition(area.position, border);
+            const border_area = this.at(border_position.x, border_position.y);
+
 
             const direction = this.getBorderOffset(border);
             const left = direction.cpy().mul({ x: height, y: width }).rotate(-Math.PI / 2).mul(0.5);
             const right = direction.cpy().mul({ x: height, y: width }).rotate(Math.PI / 2).mul(0.5);
+            const area_types = [area.type, border_area.type];
+            const make_obstacle = (position: Vector2D) => {
+                switch (area_types[(Math.floor(Math.random() * 2))]) {
+                    case WorldMapAreaType.DUNGEON: return this.game.model.obstacle_factory.makeDungeon(position);
+                    case WorldMapAreaType.FORREST: return this.game.model.obstacle_factory.makeForrest(position);
+                    case WorldMapAreaType.GRAS: return this.game.model.obstacle_factory.makeGras(position);
+                    case WorldMapAreaType.MOUNTAIN: return this.game.model.obstacle_factory.makeMountain(position);
+                    case WorldMapAreaType.VILLAGE: return this.game.model.obstacle_factory.makeVillage(position);
+                }
+            }
             // pointing to the center at the edge of the border
             const target_center = direction.cpy()
                 .add(walkable_area.center)
@@ -130,31 +154,30 @@ export class WorldMap {
                 .add(direction.cpy().mul({ x: width, y: height }).mul(-0.5));
             const target_rect = Rect.fromCenterAndSize(target_center, { x: width, y: height });
             if (is_open) {
-                for (let i = -10; i < -5; i++) {
+                for (let i = -3; i < -2; i++) {
                     const position = target_center.cpy()
-                        .add(left.cpy().mul(i / 10 + Math.random() * 0.05))
+                        .add(left.cpy().mul(i / 4 + Math.random() * 0.05))
                         .add(direction.cpy().mul(Math.random() * 100 - 50));
-                    const obstacle = this.game.model.obstacle_factory.makeTree(position);
+                    const obstacle = make_obstacle(position);
                     area.entities.push(obstacle);
                 }
-                for (let i = 5; i < 10; i++) {
+                for (let i = 2; i <= 3; i++) {
                     const position = target_center.cpy()
-                        .add(left.cpy().mul(i / 10 + Math.random() * 0.05))
+                        .add(left.cpy().mul(i / 4 + Math.random() * 0.05))
                         .add(direction.cpy().mul(Math.random() * 100 - 50));
-                    const obstacle = this.game.model.obstacle_factory.makeTree(position);
+                    const obstacle = make_obstacle(position);
                     area.entities.push(obstacle);
                 }
                 return;
             }
-            for (let i = -10; i < 10; i++) {
+            for (let i = -3; i <= 3; i++) {
                 const position = target_center.cpy()
-                    .add(left.cpy().mul(i / 10 + Math.random() * 0.05))
+                    .add(left.cpy().mul(i / 4 + Math.random() * 0.05))
                     .add(direction.cpy().mul(Math.random() * 100 - 50));
-                const obstacle = this.game.model.obstacle_factory.makeTree(position);
+                const obstacle = make_obstacle(position);
                 area.entities.push(obstacle);
             }
         });
-        return area;
     }
 
 
@@ -185,12 +208,16 @@ export class WorldMap {
         return this.areas[x + y * this.size.x];
     }
 
+    public getCurrentArea() : WorldMapArea{
+        return this.at(this.active_area_coordinate.x, this.active_area_coordinate.y);
+    }
+
     public getBorderPosition(position: Vector2D, border: WorldMapAreaBorder): Vector2D {
         switch (border) {
-            case WorldMapAreaBorder.NORTH: return new Vector2D(position.x, position.y - 1);
-            case WorldMapAreaBorder.SOUTH: return new Vector2D(position.x, position.y + 1);
-            case WorldMapAreaBorder.WEST: return new Vector2D(position.x - 1, position.y);
-            case WorldMapAreaBorder.EAST: return new Vector2D(position.x + 1, position.y);
+            case WorldMapAreaBorder.NORTH: return new Vector2D(position.x, (position.y + this.size.y - 1) % this.size.y);
+            case WorldMapAreaBorder.SOUTH: return new Vector2D(position.x, (position.y + 1) % this.size.y);
+            case WorldMapAreaBorder.WEST: return new Vector2D((position.x + this.size.x - 1) % this.size.x, position.y);
+            case WorldMapAreaBorder.EAST: return new Vector2D((position.x + 1) % this.size.x, position.y);
         }
     }
 

@@ -3,11 +3,13 @@ import { ViewSettings } from "../../library/abstract/mvc/View";
 import { Entity } from "../models/Entity";
 import { Agent, AgentImageName } from "../models/Agent";
 import { Effect, EffectImageName } from "../models/Effect";
-import { ImageAsset } from "../../library";
+import { Asset, ImageAsset } from "../../library";
 import { Rect } from "../../library/math/Rect";
 import { Obstacle, ObstacleImageName } from "../models/Obstacle";
 import { weapon_achievement_descriptions } from "../consts/WeaponAchievements";
 import { Vector2D } from "../../library/math";
+import { WorldMapAreaType } from "../consts/WorldMapAreaType";
+import { Assets } from "../base/Assets";
 
 /**
  * The area view renders the walkable area and all entities in it
@@ -29,8 +31,36 @@ export class AreaView {
      * @param model 
      */
     public render(model: GameModel): void {
-        this.render_entities(model);
+        this.renderBackground(model);
+        this.renderEntities(model);
         this.renderLatestAchievement(model);
+    }
+
+    public renderBackground(model: GameModel) {
+        const area = model.world_map.getCurrentArea();
+        const asset = (() => {
+            switch (area.type) {
+                case WorldMapAreaType.GRAS: return model.game.assets.getImage(Assets.images.background.gras_background);
+                case WorldMapAreaType.FORREST: return model.game.assets.getImage(Assets.images.background.forrest_background);
+                case WorldMapAreaType.MOUNTAIN: return model.game.assets.getImage(Assets.images.background.mountain_background);
+                case WorldMapAreaType.VILLAGE: return model.game.assets.getImage(Assets.images.background.village_background);
+                case WorldMapAreaType.DUNGEON: return model.game.assets.getImage(Assets.images.background.dungeon_background);
+                default: throw new Error('Unknown area type');
+            }
+        })();
+        if (asset instanceof ImageAsset) {
+            this.context.drawImage(
+                asset.image,
+                0, 0,
+                800, 600
+            );
+        } else {
+            this.context.fillStyle = "#000";
+            this.context.fillRect(
+                0, 0,
+                800, 600
+            );
+        }
     }
 
     public renderLatestAchievement(model: GameModel) {
@@ -65,7 +95,7 @@ export class AreaView {
      * Render the actual game state
      * @param model 
      */
-    public render_entities(model: GameModel): void {
+    public renderEntities(model: GameModel): void {
         const entities = model.walkable_area.entities;
         // render normal entities
         entities
