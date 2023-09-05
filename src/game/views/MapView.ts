@@ -201,6 +201,9 @@ export class MapView {
         this.context.lineDashOffset = performance.now() * 2 / 1000;
         this.context.lineWidth = 2;
         this.context.strokeRect(rect.left + 1, rect.top + 1, rect.width - 2, rect.height - 2);
+        this.context.fillStyle = "#fff";
+        this.context.globalAlpha = (Math.sin(performance.now() / 250)+ 1) / 2;
+        this.context.fillRect(rect.left + 1, rect.top + 1, rect.width - 2, rect.height - 2);
         this.context.restore();
     }
 }

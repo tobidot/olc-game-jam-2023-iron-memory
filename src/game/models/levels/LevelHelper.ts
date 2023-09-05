@@ -1,3 +1,4 @@
+import { assert } from "../../../library";
 import { Vector2D } from "../../../library/math";
 import { Rect } from "../../../library/math/Rect";
 import { Game } from "../../base/Game";
@@ -223,26 +224,19 @@ function loadAreaFromObject(
         const entities: Array<Agent> = [];
         for (let i = 0; i < count; i++) {
             const position = entity_definition.position ?? getMonsterSpawnPosition();
-            const info_factory = game.model.info_factory;
-            const potion_factory = game.model.potion_factory;
-            const factory = game.model.creep_factory;
-            const entity = (() => {
-                switch (entity_definition.type) {
-                    case EnemyType.INFO: return info_factory.makeInfo(position, entity_definition.info || []);
-                    case EnemyType.POTION: return potion_factory.makePotion(position);
-                    case EnemyType.GOBLIN: return factory.makeGoblin(position);
-                    case EnemyType.SPIDER: return factory.makeSpider(position);
-                    case EnemyType.IMP: return factory.makeImp(position);
-                    case EnemyType.HOB_GOBLIN: return factory.makeHobGoblin(position);
-                    case EnemyType.ORC: return factory.makeOrc(position);
-                    case EnemyType.TROLL: return factory.makeTroll(position);
-                    case EnemyType.LICH: return factory.makeLich(position);
-                    case EnemyType.DEMON: return factory.makeDemon(position);
-                    case EnemyType.DRAGON: return factory.makeDragon(position);
-                    default: throw new Error(`Invalid entity type ${entity_definition.type}`);
-                }
-            })();
-            entities.push(entity);
+            if (entity_definition.type === EnemyType.INFO) {
+                const info_factory = game.model.info_factory;
+                const entity = game.model.info_factory.makeInfo(position, entity_definition.info || []);
+                entities.push(entity);
+            } else if (entity_definition.type === EnemyType.POTION) {
+                const potion_factory = game.model.potion_factory;
+                const entity = game.model.potion_factory.makePotion(position);
+                entities.push(entity);
+            } else {
+                const entity = makeEnemy(game, entity_definition.type, position);
+                entities.push(entity);
+            }
+
         }
         return entities;
     });
@@ -360,4 +354,26 @@ export function getMonsterSpawnPosition() {
         Math.floor(Math.random() * 300 + 250),
         Math.floor(Math.random() * 250 + 175),
     );
+}
+
+export function makeEnemy(
+    game: Game,
+    type: EnemyType,
+    position: Vector2D,
+) {
+    assert(type !== EnemyType.INFO, "Cannot make info")
+    assert(type !== EnemyType.POTION, "Cannot make potion")
+    const factory = game.model.creep_factory;
+    switch (type) {
+        case EnemyType.GOBLIN: return factory.makeGoblin(position);
+        case EnemyType.SPIDER: return factory.makeSpider(position);
+        case EnemyType.IMP: return factory.makeImp(position);
+        case EnemyType.HOB_GOBLIN: return factory.makeHobGoblin(position);
+        case EnemyType.ORC: return factory.makeOrc(position);
+        case EnemyType.TROLL: return factory.makeTroll(position);
+        case EnemyType.LICH: return factory.makeLich(position);
+        case EnemyType.DEMON: return factory.makeDemon(position);
+        case EnemyType.DRAGON: return factory.makeDragon(position);
+        default: throw new Error(`Invalid entity type ${type}`);
+    }
 }
