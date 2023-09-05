@@ -34,6 +34,15 @@ function getDefinition(): WorldMapLevelDefinition {
             "Use [W,A,S,D] or [Arrow-Keys] \nto move",
         ]
     };
+    const sign_goblin = {
+        type: EnemyType.INFO,
+        position: new Vector2D(400, 300),
+        info: [
+            "This is a goblin",
+            "It is one of the weakest enemies",
+            "Kill it to get an achievement",
+        ]
+    };
     const sign_heavy_attack = {
         type: EnemyType.INFO,
         position: new Vector2D(200, 400),
@@ -83,6 +92,7 @@ function getDefinition(): WorldMapLevelDefinition {
             "This is this level's boss",
             "Your light attacks will not hurt him",
             "Try improve your weapon or use heavy attacks",
+            "If you defeat it, the map is cleared."
         ]
     };
     const enemy_pack_1 = [
@@ -108,13 +118,13 @@ function getDefinition(): WorldMapLevelDefinition {
         start: new Vector2D(1, 1),
         areas: [
             { type: WorldMapAreaType.GRAS, open_borders: S | E, entities: [...enemy_pack_1, sign_achievements] },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: [...enemy_pack_2, sign_achievement_hint_1] },
-            { type: WorldMapAreaType.FORREST, open_borders: W, entities: enemy_pack_4 },
+            { type: WorldMapAreaType.GRAS, open_borders: W | E, entities: enemy_pack_2 },
+            { type: WorldMapAreaType.GRAS, open_borders: W | E, entities: [...enemy_pack_2, sign_achievement_hint_1] },
+            { type: WorldMapAreaType.GRAS, open_borders: W, entities: enemy_pack_4 },
             //
-            { type: WorldMapAreaType.GRAS, open_borders: N | S | E, entities: enemy_pack_1 },
+            { type: WorldMapAreaType.GRAS, open_borders: N | S | E, entities: [...enemy_pack_1, sign_goblin] },
             { type: WorldMapAreaType.VILLAGE, open_borders: W | E, entities: village_enemies, x: 1, y: 1, }, // start
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
+            { type: WorldMapAreaType.GRAS, open_borders: W | E, entities: enemy_pack_2 },
             { type: WorldMapAreaType.DUNGEON, open_borders: W | S, entities: enemy_pack_2 },
             //
             { type: WorldMapAreaType.GRAS, open_borders: N | S, entities: enemy_pack_1 },
@@ -123,9 +133,9 @@ function getDefinition(): WorldMapLevelDefinition {
             { type: WorldMapAreaType.DUNGEON, open_borders: N | W, entities: enemy_pack_2 },
             //
             { type: WorldMapAreaType.GRAS, open_borders: N | E, entities: [...enemy_pack_1, sign_tombstone] },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: [...enemy_pack_2, sign_achievement_hint_2] },
-            { type: WorldMapAreaType.FORREST, open_borders: W, entities: enemy_pack_4 },
+            { type: WorldMapAreaType.GRAS, open_borders: W | E, entities: enemy_pack_2 },
+            { type: WorldMapAreaType.GRAS, open_borders: W | E, entities: [...enemy_pack_2, sign_achievement_hint_2] },
+            { type: WorldMapAreaType.GRAS, open_borders: W, entities: enemy_pack_4 },
         ]
     }
 }

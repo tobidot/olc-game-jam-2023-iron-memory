@@ -90,32 +90,32 @@ export class InventoryView {
         // Damage Values
         ctx.fillStyle = 'white';
         ctx.fillText('Physical Damage:', xOffset + 20, 60 + yOffset);
-        ctx.fillText(attackAttributes.damage.physical.toString(), xOffset + 170, 60 + yOffset);
+        ctx.fillText(attackAttributes.damage.physical.toFixed(0), xOffset + 170, 60 + yOffset);
 
         ctx.fillStyle = 'red'; // Red color for fire damage
         ctx.fillText('Fire Damage:', xOffset + 20, 80 + yOffset);
-        ctx.fillText(attackAttributes.damage.fire.toString(), xOffset + 170, 80 + yOffset);
+        ctx.fillText(attackAttributes.damage.fire.toFixed(0), xOffset + 170, 80 + yOffset);
 
         ctx.fillStyle = 'aqua';
         ctx.fillText('Ice Damage:', xOffset + 20, 100 + yOffset);
-        ctx.fillText(attackAttributes.damage.ice.toString(), xOffset + 170, 100 + yOffset);
+        ctx.fillText(attackAttributes.damage.ice.toFixed(0), xOffset + 170, 100 + yOffset);
 
         ctx.fillStyle = 'hotpink';
         ctx.fillText('Psy Damage:', xOffset + 20, 120 + yOffset);
-        ctx.fillText(attackAttributes.damage.psy.toString(), xOffset + 170, 120 + yOffset);
+        ctx.fillText(attackAttributes.damage.psy.toFixed(0), xOffset + 170, 120 + yOffset);
 
         // Other Attributes
         ctx.fillStyle = 'white';
         ctx.fillText('Attack Width:', xOffset + 20, 180 + yOffset);
-        ctx.fillText(attackAttributes.attack_width.toString(), xOffset + 170, 180 + yOffset);
+        ctx.fillText(attackAttributes.attack_width.toFixed(0), xOffset + 170, 180 + yOffset);
 
         ctx.fillText('Attack Range:', xOffset + 20, 200 + yOffset);
-        ctx.fillText(attackAttributes.attack_range.toString(), xOffset + 170, 200 + yOffset);
+        ctx.fillText(attackAttributes.attack_range.toFixed(0), xOffset + 170, 200 + yOffset);
 
         ctx.fillText('Cooldown (s):', xOffset + 20, 220 + yOffset);
-        ctx.fillText(attackAttributes.cooldown_seconds.toString(), xOffset + 170, 220 + yOffset);
+        ctx.fillText(attackAttributes.cooldown_seconds.toFixed(2), xOffset + 170, 220 + yOffset);
 
         ctx.fillText('Channel (s):', xOffset + 20, 240 + yOffset);
-        ctx.fillText(attackAttributes.channel_seconds.toString(), xOffset + 170, 240 + yOffset);
+        ctx.fillText(attackAttributes.channel_seconds.toFixed(2), xOffset + 170, 240 + yOffset);
     }
 }

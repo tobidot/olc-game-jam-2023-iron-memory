@@ -31,8 +31,10 @@ export class CreepUnitFactory {
         );
         entity.max_hitpoints = entity.hitpoints = 8;
         entity.movement_speed = 150;
-        entity.hitpoints = 6;
         entity.physical_resistance = 1;
+        entity.fire_resistance = 0;
+        entity.ice_resistance = 0;
+        entity.psy_resistance = 0;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 4, 0, 0, 0),
             48, 48, 0.3, 0
@@ -53,9 +55,13 @@ export class CreepUnitFactory {
             this.getImageSet('spider'),
             ["light", "light", "s1"]
         );
-        entity.max_hitpoints = entity.hitpoints = 5;
+        entity.seconds_between_auto_attacks = 0.5;
+        entity.max_hitpoints = entity.hitpoints = 4;
         entity.movement_speed = 90;
-        entity.psy_resistance = 2;
+        entity.physical_resistance = 2;
+        entity.fire_resistance = 3;
+        entity.ice_resistance = 0;
+        entity.psy_resistance = 1;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 3, 0, 0, 0),
             48, 48, 0.3, 0
@@ -65,12 +71,13 @@ export class CreepUnitFactory {
             new AttackDamage(entity, 0, 0, 0, 0),
             0, 0, 0.25, 0.1,
             (attack) => {
+                // debugger;
                 const player = this.game.model.walkable_area.hero;
                 if (!player) {
                     return;
                 }
                 const target = player.physics.shape.getCenter();
-                const max_jump_distance = 200;
+                const max_jump_distance = 100;
                 const distance = Math.min(max_jump_distance, target.cpy().sub(entity.physics.shape.getCenter()).length());
                 const direction = target.cpy().sub(entity.physics.shape.getCenter()).normalize();
                 entity.physics.shape.move(direction.mul(distance));
@@ -94,8 +101,10 @@ export class CreepUnitFactory {
         );
         entity.max_hitpoints = entity.hitpoints = 12;
         entity.movement_speed = 100;
-        entity.physical_resistance = 1;
-        entity.fire_resistance = 2;
+        entity.physical_resistance = 3;
+        entity.fire_resistance = 3;
+        entity.ice_resistance = 0;
+        entity.psy_resistance = 1;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 5, 0, 0, 0),
             48, 48, 0.35, 0
@@ -121,7 +130,10 @@ export class CreepUnitFactory {
         );
         entity.seconds_between_auto_attacks = 1;
         entity.max_hitpoints = entity.hitpoints = 45;
-        entity.physical_resistance = 8;
+        entity.physical_resistance = 20;
+        entity.fire_resistance = 3;
+        entity.ice_resistance = 3;
+        entity.psy_resistance = 0;
         entity.movement_speed = 110;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 8, 0, 0, 0),
@@ -158,8 +170,10 @@ export class CreepUnitFactory {
         );
         entity.seconds_between_auto_attacks = 1;
         entity.max_hitpoints = entity.hitpoints = 35;
-        entity.physical_resistance = 4;
-        entity.fire_resistance = 2;
+        entity.physical_resistance = 15;
+        entity.fire_resistance = 0;
+        entity.ice_resistance = 0;
+        entity.psy_resistance = 0;
         entity.movement_speed = 130;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 8, 0, 0, 0),

@@ -51,9 +51,10 @@ export class AiAgent extends Agent {
             s2: this.special_attack_2,
             s3: this.special_attack_3,
         }[next_attack_name];
+        const no_cooldown = this.cooldown <= 0;
         const can_attack = next_attack.attack_range === 0 || distance < next_attack.attack_range;
         const auto_attack = this.seconds_since_last_attack > this.seconds_between_auto_attacks;
-        if (can_attack || auto_attack) {
+        if ((can_attack || auto_attack) && no_cooldown) {
             this.game.controller.attack(this, direction, next_attack);
             this.attack_pattern_index = (this.attack_pattern_index + 1) % this.attack_pattern.length;
             this.seconds_since_last_attack = 0;

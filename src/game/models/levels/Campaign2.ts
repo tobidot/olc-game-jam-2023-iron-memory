@@ -18,6 +18,23 @@ function getDefinition(): WorldMapLevelDefinition {
     const S = WorldMapAreaBorder.SOUTH;
     const W = WorldMapAreaBorder.WEST;
     const E = WorldMapAreaBorder.EAST;
+
+    const sign_multi_boss = {
+        type: EnemyType.INFO,
+        info: [
+            "This level has two bosses",
+            "Bosses do not respawn if you die",
+            "Consider which one you want to fight first",
+        ]
+    };
+    const sign_potion = {
+        type: EnemyType.INFO,
+        info: [
+            "You found a potion",
+            "Attack it to heal yourself",
+        ]
+    };
+
     const enemy_pack_1 = [
         { type: EnemyType.GOBLIN, count: 1 },
     ];

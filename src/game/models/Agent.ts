@@ -97,10 +97,11 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
     }
 
     public applyDamage(damage: AttackDamage) {
-        const physical = Math.max(damage.physical * Math.random() - Math.sqrt(Math.max(0, this.physical_resistance)), 0) * (100 / (100 + this.physical_resistance));
-        const psy = Math.max(damage.psy * Math.random() - Math.sqrt(Math.max(0, this.psy_resistance)), 0) * (100 / (100 + this.psy_resistance));
-        const ice = Math.max(damage.ice * Math.random() - Math.sqrt(Math.max(0, this.ice_resistance)), 0) * (100 / (100 + this.ice_resistance));
-        const fire = Math.max(damage.fire * Math.random() - Math.sqrt(Math.max(0, this.fire_resistance)), 0) * (100 / (100 + this.fire_resistance));
+        const p50 = 20;
+        const physical = Math.max(damage.physical * Math.random() - Math.sqrt(Math.max(0, this.physical_resistance)), 0) * (p50 / (p50 + this.physical_resistance));
+        const psy = Math.max(damage.psy * Math.random() - Math.sqrt(Math.max(0, this.psy_resistance)), 0) * (p50 / (p50 + this.psy_resistance));
+        const ice = Math.max(damage.ice * Math.random() - Math.sqrt(Math.max(0, this.ice_resistance)), 0) * (p50 / (p50 + this.ice_resistance));
+        const fire = Math.max(damage.fire * Math.random() - Math.sqrt(Math.max(0, this.fire_resistance)), 0) * (p50 / (p50 + this.fire_resistance));
         const total = physical + psy + ice + fire;
         this.hitpoints -= total;
 
