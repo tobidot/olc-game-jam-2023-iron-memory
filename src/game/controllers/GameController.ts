@@ -323,8 +323,8 @@ export class GameController extends BaseController {
         }
         const old_weapon = player.weapon;
         old_weapon.hero = null;
-        const current_area = this.game.model.walkable_area;
-        const entities_in_range = current_area.physics.pickOverlapping(new Circle(player.physics.shape.getCenter(), 80));
+        const walkable_area = this.game.model.walkable_area;
+        const entities_in_range = walkable_area.physics.pickOverlapping(new Circle(player.physics.shape.getCenter(), 80));
         const player_position = player.physics.shape.getCenter();
         const weapons = entities_in_range
             .map((proxy) => proxy.reference)
@@ -338,9 +338,18 @@ export class GameController extends BaseController {
         // swap weapons
         player.weapon = new_weapon;
         new_weapon.hero = player;
-        current_area.removeEntity(new_weapon);
-        current_area.addEntity(old_weapon);
-        old_weapon.physics.shape.setCenter(new_weapon.physics.shape.getCenter());
+        // 
+        walkable_area.removeEntity(new_weapon);
+        walkable_area.addEntity(old_weapon);
+        const current_area = this.game.model.world_map.at(
+            this.game.model.world_map.active_area_coordinate.x,
+            this.game.model.world_map.active_area_coordinate.y
+        );
+        current_area.entities = current_area.entities.filter((e)=>e.id = new_weapon.id);
+        current_area.entities.push(old_weapon);
+        //
+        old_weapon.physics.shape.setCenter(new_weapon.physics.shape.getCenter().cpy());
+        console.log('swap');
     }
 
 

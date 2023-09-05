@@ -8,6 +8,7 @@ import { WorldMapAreaType } from "../consts/WorldMapAreaType";
 import { WorldMapAreaBorder } from "../consts/Direction";
 import { AiAgent } from "../models/AiAgent";
 import { Potion } from "../models/Potion";
+import { Weapon } from "../models/Weapon";
 
 export class MapView {
     public precalculated_attributes = {
@@ -104,15 +105,35 @@ export class MapView {
         this.renderImage(model, rect, tile);
         this.renderPath(model, rect, tile)
         const alive_count = tile.entities.filter(e => e instanceof AiAgent && !e.is_dead).length;
-        const potion_count = tile.entities.filter(e => e instanceof Potion  && !e.is_dead).length;
+        const potion_count = tile.entities.filter(e => e instanceof Potion && !e.is_dead).length;
         if (tile.boss && alive_count > 0) {
             this.renderBoss(model, rect, tile);
         } else if (potion_count > 0) {
             this.renderPotion(model, rect, tile);
         }
+        this.renderTombs(model, rect, tile);
         if (model.world_map.active_area_coordinate.x === x && model.world_map.active_area_coordinate.y === y) {
             this.renderSelectionHighlight(model, rect);
         }
+    }
+
+    /**
+     * Indicate that you died here
+     * @param model 
+     * @param rect 
+     * @param tile 
+     */
+    public renderTombs(model: GameModel, rect: Rect, tile: WorldMapArea) {
+        const tombs_count = tile.entities.filter(e => e instanceof Weapon && !e.is_dead).length;
+        if (tombs_count === 0) {
+            return;
+        }
+        const image_name = Assets.images.area.sword;
+        const image_asset = model.game.assets.getImage(image_name);
+        const minor_rect = rect.cpy();
+        minor_rect.size.mul(0.5);
+        minor_rect.move(minor_rect.size.cpy().mul(0.5));
+        this.context.drawImage(image_asset.image, minor_rect.left, minor_rect.top, minor_rect.width, minor_rect.height);
     }
 
 
@@ -222,7 +243,7 @@ export class MapView {
         this.context.lineWidth = 2;
         this.context.strokeRect(rect.left + 1, rect.top + 1, rect.width - 2, rect.height - 2);
         this.context.fillStyle = "#fff";
-        this.context.globalAlpha = (Math.sin(performance.now() / 250)+ 1) / 2;
+        this.context.globalAlpha = (Math.sin(performance.now() / 250) + 1) / 2;
         this.context.fillRect(rect.left + 1, rect.top + 1, rect.width - 2, rect.height - 2);
         this.context.restore();
     }

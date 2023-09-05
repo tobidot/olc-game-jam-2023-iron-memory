@@ -240,10 +240,10 @@ export class CreepUnitFactory {
         );
         entity.seconds_between_auto_attacks = 2;
         entity.max_hitpoints = entity.hitpoints = 250;
-        entity.physical_resistance = 50;
-        entity.ice_resistance = 5;
-        entity.psy_resistance = 4;
-        entity.fire_resistance = 100;
+        entity.physical_resistance = 100;
+        entity.ice_resistance = 10;
+        entity.psy_resistance = 8;
+        entity.fire_resistance = 200;
         entity.movement_speed = 80;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 16, 0, 16, 0),
@@ -285,10 +285,10 @@ export class CreepUnitFactory {
         );
         entity.seconds_between_auto_attacks = 0.5;
         entity.max_hitpoints = entity.hitpoints = 160;
-        entity.physical_resistance = 30;
-        entity.ice_resistance = 2;
-        entity.psy_resistance = 30;
-        entity.fire_resistance = 40;
+        entity.physical_resistance = 60;
+        entity.ice_resistance = 4;
+        entity.psy_resistance = 60;
+        entity.fire_resistance = 80;
         entity.movement_speed = 120;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 0, 8, 8, 0),
@@ -342,10 +342,10 @@ export class CreepUnitFactory {
         );
         entity.seconds_between_auto_attacks = 0.5;
         entity.max_hitpoints = entity.hitpoints = 120;
-        entity.physical_resistance = 25;
-        entity.ice_resistance = 25;
-        entity.psy_resistance = 10;
-        entity.fire_resistance = 10;
+        entity.physical_resistance = 50;
+        entity.ice_resistance = 50;
+        entity.psy_resistance = 20;
+        entity.fire_resistance = 20;
         entity.movement_speed = 40;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 0, 0, 0, 10),

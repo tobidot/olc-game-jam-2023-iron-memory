@@ -33,7 +33,7 @@ export class Hero extends Agent {
         is_player: boolean,
     ) {
         super(game, shape, images, is_player);
-        this.weapon = this.game.model.weapon_factory.makeSword(this.physics.shape.getCenter());
+        this.weapon = this.game.model.weapon_factory.makeSword(this.physics.shape.getCenter().cpy());
         this.weapon.hero = this;
     }
 
@@ -47,7 +47,7 @@ export class Hero extends Agent {
                     ? 200
                     : this.age < 90 ? 185 : 170;
         if (this.game.model.active_view === ViewName.AREA) {
-            this.age += delta_seconds * 1.5;
+            this.age += delta_seconds * 15;
             if (this.age > 100) {
                 this.age = 100;
                 this.hitpoints = 0;
@@ -86,10 +86,12 @@ export class Hero extends Agent {
         // drop the weapon here
         this.weapon.increase(WeaponAchievement.SOUL, 1);
         current_area.entities.push(this.weapon);
-        this.weapon.physics.shape.setCenter(this.physics.shape.getCenter());
+        this.weapon.hero = null;
+        this.weapon.physics.shape.setCenter(this.physics.shape.getCenter().cpy());
         // move to the starting area
         const starting_area = this.game.model.world_map.getStartingArea();
         this.game.controller.travelTo(starting_area);
+        console.log("You died!");
     }
 
     public onKill(other: Agent) {
@@ -158,14 +160,14 @@ export class Hero extends Agent {
 
     public getHeavyAttackStruct(): AttackAttributes {
         const attack = this.weapon.modifyHeavyAttack(this.heavy_attack.cpy());
-        attack.damage.physical *= this.age / 25;
+        attack.damage.physical *= (1 + this.age / 100);
         // attack.cooldown_seconds += this.age / 100;
         return attack;
     }
 
     public getLightAttackStruct(): AttackAttributes {
         const attack = this.weapon.modifyLightAttack(this.light_attack.cpy());
-        attack.damage.physical *= this.age / 25;
+        attack.damage.physical += this.age / 25;
         // attack.cooldown_seconds += this.age / 100;
         return attack;
     }
