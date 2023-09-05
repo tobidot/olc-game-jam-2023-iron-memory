@@ -87,7 +87,6 @@ function getDefinition(): WorldMapLevelDefinition {
     };
     const enemy_pack_1 = [
         { type: EnemyType.GOBLIN, count: 1 },
-        { type: EnemyType.POTION }
     ];
     const enemy_pack_2 = [
         { type: EnemyType.GOBLIN, count: 4 },

@@ -124,7 +124,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
     make({
         id: WeaponAchievement.FIRST_KILL,
         label: "First Kill",
-        description: "Kill your first enemy.\n Honor to you, brave warrior.",
+        description: "Kill your first enemy.",
         light: {
             damage: {physical: 1},
         }

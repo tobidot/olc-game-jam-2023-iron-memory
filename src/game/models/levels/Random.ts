@@ -16,7 +16,7 @@ export function loadRandom(
     generateWorld(game, game.model.world_map, size);
 
     // set up starting position at a random location more to the center
-    let starting_position: Vector2D|null = null;
+    let starting_position: Vector2D | null = null;
     while (starting_position === null) {
         const random_position = new Vector2D(
             Math.floor(Math.random() * game.model.world_map.size.x / 2 + game.model.world_map.size.x / 4),
@@ -97,6 +97,12 @@ function generateWorld(
             boss_value -= cost;
             const position = getMonsterSpawnPosition();
             area.entities.push(makeEnemy(game, entity_type, position));
+        }
+
+        {
+            // boss areas have a potion
+            const position = getMonsterSpawnPosition();
+            area.entities.push(game.model.potion_factory.makePotion(position));
         }
     });
 }

@@ -6,6 +6,8 @@ import { Vector2D } from "../../library/math";
 import { Assets } from "../base/Assets";
 import { WorldMapAreaType } from "../consts/WorldMapAreaType";
 import { WorldMapAreaBorder } from "../consts/Direction";
+import { AiAgent } from "../models/AiAgent";
+import { Potion } from "../models/Potion";
 
 export class MapView {
     public precalculated_attributes = {
@@ -101,8 +103,12 @@ export class MapView {
         const rect = this.determineScreenRectForTile(model, x, y);
         this.renderImage(model, rect, tile);
         this.renderPath(model, rect, tile)
-        if (tile.boss) {
+        const alive_count = tile.entities.filter(e => e instanceof AiAgent && !e.is_dead).length;
+        const potion_count = tile.entities.filter(e => e instanceof Potion  && !e.is_dead).length;
+        if (tile.boss && alive_count > 0) {
             this.renderBoss(model, rect, tile);
+        } else if (potion_count > 0) {
+            this.renderPotion(model, rect, tile);
         }
         if (model.world_map.active_area_coordinate.x === x && model.world_map.active_area_coordinate.y === y) {
             this.renderSelectionHighlight(model, rect);
@@ -141,6 +147,20 @@ export class MapView {
         const image_name = Assets.images.world_map.boss;
         const image_asset = model.game.assets.getImage(image_name);
         this.context.drawImage(image_asset.image, rect.left, rect.top, rect.width, rect.height);
+    }
+
+    /**
+     * Indicate that this is a boss area
+     * @param model 
+     * @param rect 
+     * @param tile 
+     */
+    public renderPotion(model: GameModel, rect: Rect, tile: WorldMapArea) {
+        const image_name = Assets.images.area.potion;
+        const image_asset = model.game.assets.getImage(image_name);
+        const minor_rect = rect.cpy();
+        minor_rect.size.mul(0.5);
+        this.context.drawImage(image_asset.image, minor_rect.left, minor_rect.top, minor_rect.width, minor_rect.height);
     }
 
     /**

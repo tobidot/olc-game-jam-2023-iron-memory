@@ -69,7 +69,7 @@ export class GameModel implements tgt.Model {
             ;
 
         const top_menu = [
-            // button_generator.set("x", 10).set("y", 5).make(MenuButtonName.INVENTORY, "Inventory"),
+            button_generator.set("x", 10).set("y", 5).make(MenuButtonName.INVENTORY, "Character"),
             button_generator.set("x", 210).set("y", 5).make(MenuButtonName.ACHIEVEMENTS, "Achievements"),
             button_generator.set("x", 410).set("y", 5).make(MenuButtonName.WORLD_MAP, "World Map"),
             button_generator.set("x", 610).set("y", 5).set('width', 140).make(MenuButtonName.MAIN_MENU, "Menu"),
