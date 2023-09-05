@@ -1,6 +1,8 @@
 export enum EnemyType {
     DUMMY,
     INFO,
+    POTION,
+    // mobs
     GOBLIN,
     SPIDER,
     IMP,

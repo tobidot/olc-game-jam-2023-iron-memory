@@ -32,11 +32,11 @@ export class HeroUnitFactory {
         entity.movement_speed = 600;
         
         entity.light_attack = new AttackAttributes(
-            new AttackDamage(entity, 4, 0, 0, 0),
+            new AttackDamage(entity, 5, 0, 0, 0),
             64, 120, 0.5, 0
         );
         entity.heavy_attack =  new AttackAttributes(
-            new AttackDamage(entity, 20, 0, 0, 0),
+            new AttackDamage(entity, 12, 0, 0, 0),
             96, 96, 0.5, 0.5
         );
         return entity;

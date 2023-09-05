@@ -12,6 +12,7 @@ import { Agent } from "./Agent";
 import { AiAgent } from "./AiAgent";
 import { AttackAttributes } from "./AttackAttributes";
 import { Info } from "./Info";
+import { Potion } from "./Potion";
 import { Weapon } from "./Weapon";
 
 export enum AgentImageName {
@@ -75,9 +76,18 @@ export class Hero extends Agent {
 
     public onKill(other: Agent) {
         // check for achievements
-        this.weapon.increase(WeaponAchievement.FIRST_KILL, 1);
-        this.weapon.increase(WeaponAchievement.FIRST_10_KILL, 1);
-        this.weapon.increase(WeaponAchievement.FIRST_100_KILL, 1);
+        if (other instanceof AiAgent) {
+            this.weapon.increase(WeaponAchievement.FIRST_KILL, 1);
+            this.weapon.increase(WeaponAchievement.FIRST_10_KILL, 1);
+            this.weapon.increase(WeaponAchievement.FIRST_100_KILL, 1);
+        }
+        if (other instanceof Potion) {
+            this.weapon.increase(WeaponAchievement.FIRST_HEAL, 1);
+            this.weapon.increase(WeaponAchievement.FIRST_5_HEAL, 1);
+            this.weapon.increase(WeaponAchievement.FIRST_10_HEAL, 1);
+            this.weapon.increase(WeaponAchievement.FIRST_50_HEAL, 1);
+            this.weapon.increase(WeaponAchievement.FIRST_100_HEAL, 1);
+        }
         if (other instanceof Info) {
             this.weapon.increase(WeaponAchievement.FIRST_SIGN_KILL, 1);
         }

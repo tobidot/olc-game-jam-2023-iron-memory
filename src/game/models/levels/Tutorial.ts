@@ -18,7 +18,7 @@ export function loadTutorial(
     if (info_sign instanceof Info) {
         info_sign.nextText();
     }
-    
+
 }
 
 function getDefinition(): WorldMapLevelDefinition {
@@ -87,6 +87,7 @@ function getDefinition(): WorldMapLevelDefinition {
     };
     const enemy_pack_1 = [
         { type: EnemyType.GOBLIN, count: 1 },
+        { type: EnemyType.POTION }
     ];
     const enemy_pack_2 = [
         { type: EnemyType.GOBLIN, count: 4 },
@@ -97,7 +98,7 @@ function getDefinition(): WorldMapLevelDefinition {
     const enemy_boss = [
         { type: EnemyType.HOB_GOBLIN, count: 1 },
         { type: EnemyType.GOBLIN, count: 2 },
-        ...[...new Array(5)].map((_, index)=> Object.assign({position: new Vector2D(575, 150 + index * 80), }, sign_boss)),
+        ...[...new Array(5)].map((_, index) => Object.assign({ position: new Vector2D(575, 150 + index * 80), }, sign_boss)),
     ];
     const village_enemies = [
         sign_main_attack,
@@ -106,10 +107,10 @@ function getDefinition(): WorldMapLevelDefinition {
     return {
         size: new Vector2D(4, 4),
         start: new Vector2D(1, 1),
-        areas: [            
-            { type: WorldMapAreaType.GRAS, open_borders: S | E, entities:  [...enemy_pack_1, sign_achievements]  },
+        areas: [
+            { type: WorldMapAreaType.GRAS, open_borders: S | E, entities: [...enemy_pack_1, sign_achievements] },
             { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: [...enemy_pack_2, sign_achievement_hint_1]},
+            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: [...enemy_pack_2, sign_achievement_hint_1] },
             { type: WorldMapAreaType.FORREST, open_borders: W, entities: enemy_pack_4 },
             //
             { type: WorldMapAreaType.GRAS, open_borders: N | S | E, entities: enemy_pack_1 },
@@ -122,7 +123,7 @@ function getDefinition(): WorldMapLevelDefinition {
             { type: WorldMapAreaType.DUNGEON, open_borders: W | E, entities: enemy_pack_2 },
             { type: WorldMapAreaType.DUNGEON, open_borders: N | W, entities: enemy_pack_2 },
             //
-            { type: WorldMapAreaType.GRAS, open_borders: N | E, entities: [...enemy_pack_1, sign_tombstone]  },
+            { type: WorldMapAreaType.GRAS, open_borders: N | E, entities: [...enemy_pack_1, sign_tombstone] },
             { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
             { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: [...enemy_pack_2, sign_achievement_hint_2] },
             { type: WorldMapAreaType.FORREST, open_borders: W, entities: enemy_pack_4 },

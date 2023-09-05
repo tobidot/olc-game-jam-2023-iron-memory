@@ -10,6 +10,7 @@ import { EffectFactory } from "../factories/EffectFactory";
 import { HeroUnitFactory } from "../factories/HeroUnitFactory";
 import { InfoFactory } from "../factories/InfoFactory";
 import { ObstacleFactory } from "../factories/ObstacleFactory";
+import { PotionFactory } from "../factories/PotionFactory";
 import { WeaponFactory } from "../factories/WeaponFactory";
 import { WalkableArea } from "./WalkableArea";
 import { WorldMap } from "./WorldMap";
@@ -29,6 +30,7 @@ export class GameModel implements tgt.Model {
     public obstacle_factory: ObstacleFactory;
     public weapon_factory: WeaponFactory;
     public info_factory: InfoFactory;
+    public potion_factory: PotionFactory;
     // the size of the achievement screen
     public achievement_screen_height: number = 0;
 
@@ -44,6 +46,7 @@ export class GameModel implements tgt.Model {
         this.obstacle_factory = new ObstacleFactory(this.game);
         this.weapon_factory = new WeaponFactory(this.game);
         this.info_factory = new InfoFactory(this.game);
+        this.potion_factory = new PotionFactory(this.game);
     }
 
     public createMenu(

@@ -2,6 +2,7 @@ import { AssetManager } from "../../library";
 // area
 import player from "../../../assets/images/area/warrior.png";
 import obstacle from "../../../assets/images/area/obstacle.png";
+import potion from "../../../assets/images/area/potion.png";
 import slash from "../../../assets/images/area/slash.png";
 import danger from "../../../assets/images/area/danger.png";
 import sword from "../../../assets/images/area/sword.png";
@@ -52,6 +53,7 @@ export const Assets = {
         area: {
             player,
             obstacle, 
+            potion,
             enemy,
             slash,
             danger,

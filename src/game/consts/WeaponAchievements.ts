@@ -31,7 +31,7 @@ export enum WeaponAchievement {
     FIRST_100_SPIDER_KILL,
     FIRST_10_IMP_KILL,
     FIRST_50_IMP_KILL,
-    FIRST_100_IMP_KILL,
+    FIRST_100_IMP_KILL,    
     //
     FIRST_BOSS_KILL,
     HOB_GOBLIN_KILL,
@@ -47,6 +47,12 @@ export enum WeaponAchievement {
     DRAGONS_CURSE_5,
     DEMONS_CURSE,
     DEMONS_CURSE_5,
+    // Take Heal
+    FIRST_HEAL,
+    FIRST_5_HEAL,
+    FIRST_10_HEAL,
+    FIRST_50_HEAL,
+    FIRST_100_HEAL,
     // 
     EXPLORER,
     TRAVELER,
@@ -95,13 +101,24 @@ function make(
     ];
 }
 
+/**
+ * The descriptions of all weapon achievements
+ * 
+ * Base Value for balancing
+ * Physicial: 2
+ * Fire     : 3
+ * Ice      : 4
+ * Psy      : 5
+ * 
+ * Light attack modifiers are about 3 times as much worth as heavy attack modifiers
+ */
 export const weapon_achievement_descriptions = new Map<WeaponAchievement, WeaponAchievementDescription>([
     make({
         id: WeaponAchievement.FIRST_SIGN_KILL,
         label: "An easy Target",
         description: "Destroy an info sign.",
         heavy: {
-            damage: {physical: 5},
+            damage: {physical: 6},
         }
     }),
     make({
@@ -109,7 +126,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "First Kill",
         description: "Kill your first enemy.\n Honor to you, brave warrior.",
         light: {
-            damage: {physical: 2},
+            damage: {physical: 1},
         }
     }),
     make({
@@ -117,10 +134,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "10 Kills",
         description: "Kill 10 enemies.",
         light: {
-            damage: {physical: 2},
+            damage: {physical: 1},
         },
         heavy: {
-            damage: {physical: 5},
+            damage: {physical: 3},
         }
     }),
     make({
@@ -128,10 +145,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "100 Kills",
         description: "Kill 100 enemies.",
         light: {
-            damage: {physical: 5},
+            damage: {physical: 2},
         },
         heavy: {
-            damage: {physical: 10},
+            damage: {physical: 6},
         }
     }),
     make({
@@ -139,10 +156,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "500 Kills",
         description: "Kill 500 enemies.",
         light: {
-            damage: { psy: 20},
+            damage: { psy: 10},
         },
         heavy: {
-            damage: {psy: 50},
+            damage: {psy: 30},
         }
     }),
     //
@@ -154,7 +171,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
             damage: {physical: -1, psy: 1},
         },
         heavy: {
-            damage: {physical: -2, psy: 2},
+            damage: {physical: -3, psy: 3},
         },
     }),
     make({
@@ -165,7 +182,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
             damage: {physical: -2, psy: 4},
         },
         heavy: {
-            damage: {physical: -5, psy: 8},
+            damage: {physical: -6, psy: 12},
         },
     }),
     //
@@ -184,8 +201,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "5 Double Kills",
         description: "Kill 2 enemies with a single attack, 5 times.",
         light: {
+            damage: {physical: 1},
             attack_width: 10,
             attack_range: 20,
+            cooldown_seconds: -0.025,
         },
     }),
     make({
@@ -193,8 +212,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "10 Double Kills",
         description: "Kill 2 enemies with a single attack, 10 times.",
         light: {
+            damage: {physical: 1},
             attack_width: 10,
             attack_range: 20,
+            cooldown_seconds: -0.025,
         },
     }),
     make({
@@ -202,9 +223,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "50 Double Kills",
         description: "Kill 2 enemies with a single attack, 50 times.",
         light: {
-            damage: {physical: 2},
+            damage: {physical: 1},
             attack_width: 10,
             attack_range: 20,
+            cooldown_seconds: -0.025,
         },
     }),
     make({
@@ -212,9 +234,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "100 Double Kills",
         description: "Kill 2 enemies with a single attack, 100 times.",
         light: {
-            damage: {physical: 5},
+            damage: {physical: 3},
             attack_width: 30,
             attack_range: 50,
+            cooldown_seconds: -0.05,
         },
     }),
     //
@@ -223,9 +246,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Penta Kill",
         description: "Kill 5 enemies with a single attack.",
         heavy: {
-            damage: {physical: 5},
-            attack_width: 20,
+            damage: {physical: 6},
+            attack_width: 30,
             attack_range: 30,
+            channel_seconds: 0.025,
         },
     }),
     make({
@@ -233,9 +257,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Penta, Penta",
         description: "Kill 5 enemies with a single attack, 5 times.",
         heavy: {
-            damage: {physical: 5},
-            attack_width: 20,
+            damage: {physical: 6},
+            attack_width: 30,
             attack_range: 30,
+            channel_seconds: 0.025,
         },
     }),
     make({
@@ -243,9 +268,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "10 Pentakills",
         description: "Kill 5 enemies with a single attack, 10 times.",
         heavy: {
-            damage: {physical: 5},
-            attack_width: 20,
+            damage: {physical: 6},
+            attack_width: 30,
             attack_range: 30,
+            channel_seconds: 0.025,
         },
     }),
     make({
@@ -253,9 +279,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "20 Pentakills",
         description: "Kill 5 enemies with a single attack, 20 times.",
         heavy: {
-            damage: {physical: 5},
-            attack_width: 20,
-            attack_range: 30,
+            damage: {physical: 12},
+            attack_width: 60,
+            attack_range: 60,
+            channel_seconds: 0.05,
         },
     }),
     //
@@ -264,10 +291,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Goblin Seeker",
         description: "Kill 10 goblins.",
         light: {
-            damage: {physical: 2 },
+            damage: {physical: 1 },
         },
         heavy: {
-            damage: {physical: 5},
+            damage: {physical: 3},
         }
     }),
     make({
@@ -275,10 +302,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Goblin Slayer",
         description: "Kill 50 goblins.",
         light: {
-            damage: {physical: 2 },
+            damage: {physical: 1 },
         },
         heavy: {
-            damage: {physical: 10},
+            damage: {physical: 3},
         }
     }),
     make({
@@ -286,10 +313,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Goblin Terror",
         description: "Kill 100 goblins.",
         light: {
-            damage: {physical: 5 },
+            damage: {physical: 2 },
         },
         heavy: {
-            damage: {physical: 20},
+            damage: {physical: 6},
         }
     }),
     make({
@@ -297,10 +324,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Spider Squasher",
         description: "Kill 10 spiders.",
         light: {
-            damage: {fire: 2 },
+            damage: {fire: 1},
         },
         heavy: {
-            damage: {fire: 5},
+            damage: {fire: 3},
         }
     }),
     make({
@@ -308,10 +335,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Spider Exterminator",
         description: "Kill 50 spiders.",
         light: {
-            damage: {fire: 2 },
+            damage: {fire: 1},
         },
         heavy: {
-            damage: {fire: 10},
+            damage: {fire: 3},
         }
     }),
     make({
@@ -319,10 +346,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Spider Terror",
         description: "Kill 100 spiders.",
         light: {
-            damage: {fire: 5 },
+            damage: {fire: 2 },
         },
         heavy: {
-            damage: {fire: 20},
+            damage: {fire: 6},
         }
     }),
     //
@@ -331,10 +358,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Imp Hunter",
         description: "Kill 10 imps.",
         light: {
-            damage: {ice: 2 },
+            damage: {psy: 1},
         },
         heavy: {
-            damage: {ice: 5},
+            damage: {psy: 3},
         }
     }),
     make({
@@ -342,10 +369,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Cleric",
         description: "Kill 50 imps.",
         light: {
-            damage: {ice: 2 },
+            damage: {psy: 1},
         },
         heavy: {
-            damage: {ice: 10},
+            damage: {psy: 3},
         }
     }),
     make({
@@ -353,10 +380,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Hell's Bane",
         description: "Kill 100 imps.",
         light: {
-            damage: {ice: 5 },
+            damage: {psy: 2},
         },
         heavy: {
-            damage: {ice: 20},
+            damage: {psy: 6},
         }
     }),
     //
@@ -365,11 +392,11 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Hero",
         description: "Kill a boss.",
         light: {
-            damage: {fire: 1, ice: 1, psy: 1, physical: 1},
+            damage: {fire: 1, ice: 1, psy: 1},
             cooldown_seconds: -0.1,
         },
         heavy: {
-            damage: {fire: 4, ice: 4, psy: 4, physical: 4},            
+            damage: {fire: 2, ice: 2, psy: 2, physical: 5},            
             channel_seconds: -0.1,
         }
     }),
@@ -378,7 +405,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Hobgoblin",
         description: "Kill a hobgoblin.",
         light: {
-            damage: {physical: 3 },
+            damage: {physical: 3},
         },
         heavy: {
             damage: {physical: 10},
@@ -389,10 +416,10 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Orc",
         description: "Kill an orc.",
         light: {
-            damage: {physical: 3},
+            attack_width: 25,
         },
         heavy: {
-            damage: {physical: 10},
+            attack_width: 75,
         }
     }),
     make({
@@ -411,7 +438,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         label: "Dragon",
         description: "Kill a dragon.",
         light: {
-            damage: {fire: 5},
+            damage: {fire: 6},
         },
         heavy: {
             damage: {fire: 20},
@@ -425,7 +452,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
             damage: {psy: 5},
         },
         heavy: {
-            damage: {psy: 20},
+            damage: {psy: 15},
         }
     }),
     make({
@@ -436,7 +463,7 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
             damage: {ice: 5},
         },
         heavy: {
-            damage: {ice: 20},
+            damage: {ice: 15},
         }
     }),
     //
@@ -507,6 +534,61 @@ export const weapon_achievement_descriptions = new Map<WeaponAchievement, Weapon
         }
     }),
     //
+    make({
+        id: WeaponAchievement.FIRST_HEAL,
+        label: "First Heal",
+        description: "Heal yourself.",
+        light: {
+            attack_range: 10,
+        },
+        heavy: {
+            channel_seconds: -0.05,
+        }
+    }),
+    make({
+        id: WeaponAchievement.FIRST_5_HEAL,
+        label: "5 Heals",
+        description: "Heal yourself, 5 times.",
+        light: {
+            attack_range: 10,
+        },
+        heavy: {
+            channel_seconds: -0.05,
+        }
+    }),
+    make({
+        id: WeaponAchievement.FIRST_10_HEAL,
+        label: "10 Heals",
+        description: "Heal yourself, 10 times.",
+        light: {
+            attack_range: 10,
+        },
+        heavy: {
+            channel_seconds: -0.05,
+        }
+    }),
+    make({
+        id: WeaponAchievement.FIRST_50_HEAL,
+        label: "50 Heals",
+        description: "Heal yourself, 50 times.",
+        light: {
+            attack_range: 10,
+        },
+        heavy: {
+            channel_seconds: -0.05,
+        }
+    }),
+    make({
+        id: WeaponAchievement.FIRST_100_HEAL,
+        label: "100 Heals",
+        description: "Heal yourself, 100 times.",
+        light: {
+            attack_range: 10,
+        },
+        heavy: {
+            channel_seconds: -0.05,
+        }
+    }),
     make({
         id: WeaponAchievement.EXPLORER,
         label: "Explorer",
