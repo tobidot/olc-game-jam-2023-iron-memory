@@ -27,8 +27,9 @@ export class HeroUnitFactory {
             this.getImageSet('swordsman'),
             true,
         );
-        entity.max_hitpoints = entity.hitpoints = 40;
-        entity.movement_speed = 400;
+        entity.max_hitpoints = entity.hitpoints = 50;
+        // entity.movement_speed = 200;
+        entity.movement_speed = 600;
         
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 4, 0, 0, 0),

@@ -2,11 +2,13 @@ import { Vector2D } from "../../library/math";
 import { Shape } from "../../library/math/Shape";
 import { Collision, PhysicsProxiable, PhysicsProxy } from "../../library/physics/Physics";
 import { Game } from "../base/Game";
+import { EnemyType } from "../consts/EnemyType";
 import { Agent, AgentImageSet } from "./Agent";
 
 export type AiAgentAttackPattern = Array<"heavy" | "light" | "s1" | "s2" | "s3">;
 
 export class AiAgent extends Agent {
+    public readonly type: EnemyType;
     public attack_pattern: AiAgentAttackPattern ;
     public attack_pattern_index: number = 0;
     public seconds_since_last_attack: number = 0;
@@ -14,12 +16,14 @@ export class AiAgent extends Agent {
 
     public constructor(
         game: Game,
+        type: EnemyType,
         shape: Shape,
         images: AgentImageSet,
         attack_pattern: AiAgentAttackPattern = ["light", "light", "heavy"]
     ) {
         super(game, shape, images, false);
         this.attack_pattern = attack_pattern;
+        this.type = type;
     }
 
     public update(delta_seconds: number): void {

@@ -17,8 +17,19 @@ export class AchievementController extends BaseController implements MouseContro
     }
 
     public onMouseWheel(event: MouseWheelEvent): void {
-        this.game.view.achievement_view.scroll_offset += event.deltaY;
+        const player = this.game.model.walkable_area.hero;
+        if (!player) {
+            return;
+        }
+        const max_scroll = Math.max(0, this.game.model.achievement_screen_height - 400);
+        this.game.view.achievement_view.scroll_offset = Math.max(
+            0,
+            Math.min(
+                max_scroll, 
+                this.game.view.achievement_view.scroll_offset + event.deltaY
+            )
+        );
     }
 
-    
+
 }

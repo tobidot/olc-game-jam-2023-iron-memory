@@ -97,10 +97,10 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
     }
 
     public applyDamage(damage: AttackDamage) {
-        const physical = Math.max(damage.physical - this.physical_resistance, 0);
-        const psy = Math.max(damage.psy - this.psy_resistance, 0);
-        const ice = Math.max(damage.ice - this.ice_resistance, 0);
-        const fire = Math.max(damage.fire - this.fire_resistance, 0);
+        const physical = Math.max(damage.physical * Math.random() - Math.sqrt(Math.max(0, this.physical_resistance)), 0) * (100 / (100 + this.physical_resistance));
+        const psy = Math.max(damage.psy * Math.random() - Math.sqrt(Math.max(0, this.psy_resistance)), 0) * (100 / (100 + this.psy_resistance));
+        const ice = Math.max(damage.ice * Math.random() - Math.sqrt(Math.max(0, this.ice_resistance)), 0) * (100 / (100 + this.ice_resistance));
+        const fire = Math.max(damage.fire * Math.random() - Math.sqrt(Math.max(0, this.fire_resistance)), 0) * (100 / (100 + this.fire_resistance));
         const total = physical + psy + ice + fire;
         this.hitpoints -= total;
 
@@ -109,7 +109,7 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
         const colors = ["white", "hotpink", "aqua", "orange"];
         types.map((damage, index) => {
             if (damage > 0 || index === 0) {
-                const position = this.physics.shape.getCenter().cpy().add(new Vector2D(index * 10, -20));
+                const position = this.physics.shape.getCenter().cpy().add(new Vector2D(index * 30, -20));
                 const effect = this.game.model.effect_factory.makeDamageText(
                     position,
                     damage.toFixed(0),

@@ -29,6 +29,8 @@ export class GameModel implements tgt.Model {
     public obstacle_factory: ObstacleFactory;
     public weapon_factory: WeaponFactory;
     public info_factory: InfoFactory;
+    // the size of the achievement screen
+    public achievement_screen_height: number = 0;
 
     public constructor(
         public readonly game: Game,

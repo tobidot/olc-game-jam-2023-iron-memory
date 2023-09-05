@@ -1,6 +1,23 @@
 import { Agent } from "./Agent";
 import { AttackDamage } from "./AttackDamage";
 
+export interface AttackDamageModifier {
+    physical?: number;
+    psy?: number;
+    fire?: number;
+    ice?: number;
+}
+
+export interface AttackModifier {
+    damage?: AttackDamageModifier;
+    attack_width?: number;
+    attack_range?: number;
+    cooldown_seconds?: number;
+    channel_seconds?: number;
+    // on_cast?: null | ((attack: AttackAttributes) => void);
+    // on_hit?: null | ((attack: AttackAttributes, target: Agent) => void);
+}
+
 export class AttackAttributes {
     constructor(
         public damage: AttackDamage,

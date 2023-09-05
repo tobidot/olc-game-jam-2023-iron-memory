@@ -103,8 +103,12 @@ export class GameController extends BaseController {
         const player = this.game.model.walkable_area.hero;
         assert(!!player, "No player unit");
 
-        // 
-        player.weapon.increase(WeaponAchievement.TRAVELER, 1);
+        // track achievement
+        const area_key = new_area.position.x + ":" + new_area.position.y;
+        if (!player.weapon.visited_areas.has(area_key)) {
+            player.weapon.visited_areas.add(area_key);
+            player.weapon.increase(WeaponAchievement.TRAVELER, 1);
+        };
         // reset the walkable area
         const walkable_area = this.game.model.walkable_area;
         // reset the player position to the opposie border of where he just traveld to
@@ -127,7 +131,14 @@ export class GameController extends BaseController {
             }
             const position = this.game.model.world_map.getBorderPosition(new_area.position, border);
             const area = this.game.model.world_map.at(position.x, position.y);
-            area.discovered = true;
+            if (!area.discovered) {
+                area.discovered = true;
+                // check achievemnts
+                const discovered_areas = this.game.model.world_map.areas.reduce((sum, area) => sum + (area.discovered ? 1 : 0), 0);
+                if (discovered_areas >= this.game.model.world_map.areas.length) {
+                    player.weapon.increase(WeaponAchievement.EXPLORER, 1);
+                }
+            }
         });
 
 
@@ -205,9 +216,37 @@ export class GameController extends BaseController {
                 delay_seconds: channel_seconds,
                 callback: this.getAttackCallback(agent, direction, attack),
             };
+
+            if (attack_width > 0 && attack_range > 0) {
+                // add the visual effect
+                const center = agent.physics.shape.getCenter();
+                const effect = this.game.model.effect_factory
+                    .makePreChannel(center.cpy(), attack_width, attack_range, direction, channel_seconds);
+                this.game.model.walkable_area.entities.push(effect);
+        
+            }
         } else {
             this.getAttackCallback(agent, direction, attack)(agent);
         }
+    }
+
+    public getAttackShape(
+        source: Agent,
+        direction: Vector2D,
+    ) {
+        const { attack_width, attack_range } = source.getLightAttackStruct();
+        const direction_left = direction.cpy().rotate(Math.PI / 2).normalize();
+        const direction_right = direction.cpy().rotate(-Math.PI / 2).normalize();
+        const forward = direction.cpy().mul(attack_range);
+        const left = direction_left.cpy().mul(attack_width / 2);
+        const right = direction_right.cpy().mul(attack_width / 2);
+        const attack_shape = new ConvexPolygone([
+            source.physics.shape.getCenter().cpy().add(left),
+            source.physics.shape.getCenter().cpy().add(forward).add(left),
+            source.physics.shape.getCenter().cpy().add(forward).add(right),
+            source.physics.shape.getCenter().cpy().add(right),
+        ]);
+        return attack_shape;
     }
 
     public getAttackCallback(
@@ -234,27 +273,34 @@ export class GameController extends BaseController {
             this.game.model.walkable_area.entities.push(effect);
 
             // apply damage to enemies
-            const direction_left = direction.cpy().rotate(Math.PI / 2).normalize();
-            const direction_right = direction.cpy().rotate(-Math.PI / 2).normalize();
-            const forward = direction.cpy().mul(attack_range);
-            const left = direction_left.cpy().mul(attack_width / 2);
-            const right = direction_right.cpy().mul(attack_width / 2);
-            const attack_shape = new ConvexPolygone([
-                player_center.cpy().add(left),
-                player_center.cpy().add(forward).add(left),
-                player_center.cpy().add(forward).add(right),
-                player_center.cpy().add(right),
-            ]);
             // pick enemies in area
+            const attack_shape = this.getAttackShape(source, direction);
             const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_shape)
                 .map((proxy) => proxy.reference)
                 .filter((entity): entity is Agent => entity instanceof Agent && (entity.is_player !== agent.is_player || entity.is_neutral));
+
             enemies.forEach((enemy) => {
                 enemy.applyDamage(damage);
                 if (on_hit) {
                     on_hit(attack, enemy);
                 }
             });
+
+            if (source instanceof Hero) {
+                if (enemies.length >= 2) {
+                    source.weapon.increase(WeaponAchievement.FIRST_DOUBLE_KILL, 1);
+                    source.weapon.increase(WeaponAchievement.FIRST_5_DOUBLE_KILL, 1);
+                    source.weapon.increase(WeaponAchievement.FIRST_10_DOUBLE_KILL, 1);
+                    source.weapon.increase(WeaponAchievement.FIRST_50_DOUBLE_KILL, 1);
+                    source.weapon.increase(WeaponAchievement.FIRST_100_DOUBLE_KILL, 1);
+                }
+                if (enemies.length >= 5) {
+                    source.weapon.increase(WeaponAchievement.FIRST_PENTA_KILL, 1);
+                    source.weapon.increase(WeaponAchievement.FIRST_5_PENTA_KILL, 1);
+                    source.weapon.increase(WeaponAchievement.FIRST_10_PENTA_KILL, 1);
+                    source.weapon.increase(WeaponAchievement.FIRST_20_PENTA_KILL, 1);
+                }
+            }
 
             this.playerUpdateMovement();
         }
@@ -266,11 +312,14 @@ export class GameController extends BaseController {
             return;
         }
         const old_weapon = player.weapon;
+        old_weapon.hero = null;
         const current_area = this.game.model.walkable_area;
         const entities_in_range = current_area.physics.pickOverlapping(new Circle(player.physics.shape.getCenter(), 80));
+        const player_position = player.physics.shape.getCenter();
         const weapons = entities_in_range
             .map((proxy) => proxy.reference)
-            .filter((entity): entity is Weapon => entity instanceof Weapon);
+            .filter((entity): entity is Weapon => entity instanceof Weapon)
+            .sort((a, b) => a.physics.shape.getCenter().distance2(player_position) - b.physics.shape.getCenter().distance2(player_position));
         if (weapons.length <= 0) {
             console.log('no weapons in range');
             return;
@@ -278,6 +327,7 @@ export class GameController extends BaseController {
         const new_weapon = weapons[0];
         // swap weapons
         player.weapon = new_weapon;
+        new_weapon.hero = player;
         current_area.removeEntity(new_weapon);
         current_area.addEntity(old_weapon);
         old_weapon.physics.shape.setCenter(new_weapon.physics.shape.getCenter());

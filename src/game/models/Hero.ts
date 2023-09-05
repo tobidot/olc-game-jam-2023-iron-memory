@@ -6,9 +6,12 @@ import { Collision, PhysicsProxiable, PhysicsProxy } from "../../library/physics
 import { SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
+import { EnemyType } from "../consts/EnemyType";
 import { WeaponAchievement } from "../consts/WeaponAchievements";
 import { Agent } from "./Agent";
+import { AiAgent } from "./AiAgent";
 import { AttackAttributes } from "./AttackAttributes";
+import { Info } from "./Info";
 import { Weapon } from "./Weapon";
 
 export enum AgentImageName {
@@ -28,6 +31,7 @@ export class Hero extends Agent {
     ) {
         super(game, shape, images, is_player);
         this.weapon = this.game.model.weapon_factory.makeSword(this.physics.shape.getCenter());
+        this.weapon.hero = this;
     }
 
     public update(delta_seconds: number): void {
@@ -70,10 +74,58 @@ export class Hero extends Agent {
     }
 
     public onKill(other: Agent) {
-        // do nothing
+        // check for achievements
         this.weapon.increase(WeaponAchievement.FIRST_KILL, 1);
         this.weapon.increase(WeaponAchievement.FIRST_10_KILL, 1);
         this.weapon.increase(WeaponAchievement.FIRST_100_KILL, 1);
+        if (other instanceof Info) {
+            this.weapon.increase(WeaponAchievement.FIRST_SIGN_KILL, 1);
+        }
+        if (other instanceof Weapon) {
+            this.weapon.increase(WeaponAchievement.FIRST_SWORD_KILL, 1);
+            this.weapon.increase(WeaponAchievement.FIRST_5_SWORD_KILL, 1);
+        }
+        if (other instanceof AiAgent) {
+            switch (other.type) {
+                case EnemyType.GOBLIN:
+                    this.weapon.increase(WeaponAchievement.FIRST_10_GOBLIN_KILL, 1);
+                    this.weapon.increase(WeaponAchievement.FIRST_50_GOBLIN_KILL, 1);
+                    this.weapon.increase(WeaponAchievement.FIRST_100_GOBLIN_KILL, 1);
+                    break;
+                case EnemyType.SPIDER:
+                    this.weapon.increase(WeaponAchievement.FIRST_10_SPIDER_KILL, 1);
+                    this.weapon.increase(WeaponAchievement.FIRST_50_SPIDER_KILL, 1);
+                    this.weapon.increase(WeaponAchievement.FIRST_100_SPIDER_KILL, 1);
+                    break;
+                case EnemyType.IMP:
+                    this.weapon.increase(WeaponAchievement.FIRST_10_IMP_KILL, 1);
+                    this.weapon.increase(WeaponAchievement.FIRST_50_IMP_KILL, 1);
+                    this.weapon.increase(WeaponAchievement.FIRST_100_IMP_KILL, 1);
+                    break;
+                case EnemyType.HOB_GOBLIN:
+                    this.weapon.increase(WeaponAchievement.HOB_GOBLIN_KILL, 1);
+                    break;
+                case EnemyType.ORC:
+                    this.weapon.increase(WeaponAchievement.ORC_KILL, 1);
+                    break;
+                case EnemyType.TROLL:
+                    this.weapon.increase(WeaponAchievement.TROLL_KILL, 1);
+                    break;
+                case EnemyType.DRAGON:
+                    this.weapon.increase(WeaponAchievement.DRAGON_KILL, 1);
+                    break;
+                case EnemyType.DEMON:
+                    this.weapon.increase(WeaponAchievement.DEMON_KILL, 1);
+                    break;
+                case EnemyType.LICH:
+                    this.weapon.increase(WeaponAchievement.LICH_KILL, 1);
+                    break;
+            }
+            if ([EnemyType.HOB_GOBLIN, EnemyType.ORC, EnemyType.TROLL, EnemyType.DRAGON, EnemyType.DEMON, EnemyType.LICH].includes(other.type)) {
+                this.weapon.increase(WeaponAchievement.FIRST_BOSS_KILL, 1);
+            }
+        }
+
     }
 
     public getHeavyAttackStruct(): AttackAttributes {

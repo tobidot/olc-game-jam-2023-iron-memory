@@ -3,6 +3,8 @@ import { Vector2D } from "../../library/math";
 import { Circle } from "../../library/math/Circle";
 import { Assets } from "../base/Assets";
 import { Game } from "../base/Game";
+import { EnemyType } from "../consts/EnemyType";
+import { WeaponAchievement } from "../consts/WeaponAchievements";
 import { Agent, AgentImageName, AgentImageSet } from "../models/Agent";
 import { AiAgent } from "../models/AiAgent";
 import { AttackAttributes } from "../models/AttackAttributes";
@@ -22,6 +24,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.GOBLIN,
             shape,
             this.getImageSet('goblin'),
             ["light"]
@@ -45,6 +48,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.SPIDER,
             shape,
             this.getImageSet('spider'),
             ["light", "light", "s1"]
@@ -83,6 +87,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.IMP,
             shape,
             this.getImageSet('imp'),
             ["light", "heavy"]
@@ -109,6 +114,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.HOB_GOBLIN,
             shape,
             this.getImageSet('goblin'),
             ["light", "light", "heavy", "s1"],
@@ -145,6 +151,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.ORC,
             shape,
             this.getImageSet('orc'),
             ["light", "heavy", "heavy", "s1", "light", "heavy", "s1"],
@@ -192,6 +199,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.TROLL,
             shape,
             this.getImageSet('troll'),
             ["light", "light", "light", "s1", "light", "light", "s1"],
@@ -228,6 +236,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.DRAGON,
             shape,
             this.getImageSet('dragon'),
             ["light", "light", "light", "heavy", "s1"],
@@ -257,6 +266,8 @@ export class CreepUnitFactory {
                     return;
                 }
                 // progress achievement to corrosive the sword damage
+                player.weapon.increase(WeaponAchievement.DRAGONS_CURSE, 1);
+                player.weapon.increase(WeaponAchievement.DRAGONS_CURSE_5, 1);
             },
         );
         return entity;
@@ -270,6 +281,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.DEMON,
             shape,
             this.getImageSet('demon'),
             ["light", "s1", "light", "s2", "light", "s1", "heavy",],
@@ -314,7 +326,7 @@ export class CreepUnitFactory {
 
             },
         );
-        // firewall  
+        // demon curse  
         entity.special_attack_3 = new AttackAttributes(
             new AttackDamage(entity, 0, 0, 42, 0),
             512, 80, 0.75, 1.5,
@@ -324,6 +336,8 @@ export class CreepUnitFactory {
                     return;
                 }
                 // progress achievement to corrosive the sword damage
+                player.weapon.increase(WeaponAchievement.DEMONS_CURSE, 1);
+                player.weapon.increase(WeaponAchievement.DEMONS_CURSE_5, 1);
             },
         );
         return entity;
@@ -336,6 +350,7 @@ export class CreepUnitFactory {
         const shape = new Circle(position, size / 2);
         const entity = new AiAgent(
             this.game,
+            EnemyType.LICH,
             shape,
             this.getImageSet('lich'),
             ["light", "s1", "s1", "light", "s2", "s3"],

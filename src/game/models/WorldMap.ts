@@ -41,8 +41,14 @@ export class WorldMap {
      */
     public repopulateWorld() {
         this.game.model.world_map.areas.forEach(area => {
-            if (area.boss) {
-                // don't respawn boss
+            const alive_count = area.entities.reduce((sum, next) => {
+                if (!(next instanceof Agent) || next.is_dead || next.is_neutral || next.is_player ) {
+                    return sum;
+                }
+                return sum + 1;
+            }, 0);
+            if (area.boss && alive_count === 0) {
+                // don't respawn boss, if dead
                 return;
             }
             area.entities.forEach((entity) => {

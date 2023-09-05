@@ -36,8 +36,38 @@ export class EffectFactory {
         return entity;
     }
 
+    /**
+     * Show where an attack will hit
+     * @param position 
+     * @param width 
+     * @param range 
+     * @param direction 
+     * @returns 
+     */
+    public makePreChannel(
+        position: Vector2D,
+        width: number,
+        range: number,
+        direction: Vector2D,
+        channel_time: number,
+    ) {
+        const rect = Rect.fromCenterAndSize(position.cpy().add(direction.cpy().mul(range / 2)), { x: width, y: range });
+        const ttl = channel_time;
+        const entity = new Effect(
+            this.game,
+            rect,
+            direction.angle(),
+            this.getImageSet('danger'),
+            ttl
+        );
+        entity.update_callback = () => {
+            entity.alpha = 0.5 + (1 - entity.seconds_to_live / ttl) * 0.5;
+        }
+        return entity;
+    }
+
     public makeDamageText(position: Vector2D, text: string, color: string) {
-        const ttl = 0.5;
+        const ttl = 1.0;
         const entity = new Effect(
             this.game,
             Rect.fromCenterAndSize(position, { x: 0, y: 0 }),
@@ -53,7 +83,7 @@ export class EffectFactory {
     }
 
 
-    public makeInfoText(position: Vector2D, text: string, color: string) : Effect {
+    public makeInfoText(position: Vector2D, text: string, color: string): Effect {
         const ttl = 10.0;
         const entity = new Effect(
             this.game,
@@ -77,5 +107,8 @@ export class EffectFactory {
 const image_sets = {
     slash: [
         [EffectImageName.DEFAULT, Assets.images.area.slash],
+    ],
+    danger: [
+        [EffectImageName.DEFAULT, Assets.images.area.danger],
     ],
 } as const;
