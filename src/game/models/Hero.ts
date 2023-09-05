@@ -27,7 +27,7 @@ export class Hero extends Agent {
     public age: number = 16;
 
     public constructor(
-        protected game: Game,
+        game: Game,
         shape: Shape,
         images: AgentImageSet,
         is_player: boolean,
@@ -47,7 +47,7 @@ export class Hero extends Agent {
                     ? 200
                     : this.age < 90 ? 185 : 170;
         if (this.game.model.active_view === ViewName.AREA) {
-            this.age += delta_seconds * 15;
+            this.age += delta_seconds * 1.5;
             if (this.age > 100) {
                 this.age = 100;
                 this.hitpoints = 0;

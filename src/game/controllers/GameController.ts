@@ -321,6 +321,9 @@ export class GameController extends BaseController {
         if (!player) {
             return;
         }
+        if (player.channel !== null) {
+            return ;
+        }
         const old_weapon = player.weapon;
         old_weapon.hero = null;
         const walkable_area = this.game.model.walkable_area;
@@ -349,7 +352,15 @@ export class GameController extends BaseController {
         current_area.entities.push(old_weapon);
         //
         old_weapon.physics.shape.setCenter(new_weapon.physics.shape.getCenter().cpy());
-        console.log('swap');
+        // animate swap
+        player.physics.velocity.set({ x: 0, y: 0 });
+        player.channel = {
+            delay_seconds: 1.5,
+            callback: (agent) => {
+                agent.channel = null;
+            }
+        }
+        // 
     }
 
 

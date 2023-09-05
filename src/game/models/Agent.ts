@@ -53,7 +53,7 @@ export class Agent extends Entity implements PhysicsProxiable, Physical {
     // 
 
     public constructor(
-        protected game: Game,
+        public game: Game,
         shape: Shape,
         images: AgentImageSet,
         is_player: boolean,

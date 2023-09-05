@@ -16,6 +16,7 @@ import troll from "../../../assets/images/area/troll.png";
 import demon from "../../../assets/images/area/demon.png";
 import lich from "../../../assets/images/area/lich.png";
 import dragon from "../../../assets/images/area/dragon.png";
+import channel from "../../../assets/images/area/channel.png";
 //
 import village_obstacle from "../../../assets/images/area/village_obstacle.png";
 import forrest_obstacle from "../../../assets/images/area/forrest_obstacle.png";
@@ -49,6 +50,9 @@ export const Assets = {
         },
         info: {
             hit_me,
+        },
+        effects: {
+            channel,
         },
         area: {
             player,

@@ -241,6 +241,18 @@ export class AreaView {
             life_bar.left, life_bar.top,
             life_bar.width, life_bar.height
         );
+
+        // show a channeling symbol if the agent is channeling
+        if (agent.channel !== null) {
+            const channeling_rect = Rect.fromLeftTopWidthHeight(
+                rect.center.x - 10,
+                rect.top - 20,
+                20,
+                20
+            );
+            const image = agent.game.assets.getImage( Assets.images.effects.channel);
+            this.renderImage(channeling_rect, image);
+        }
     }
 
     public renderImage(rect: Rect, image?: ImageAsset): void {

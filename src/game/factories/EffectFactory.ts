@@ -61,7 +61,7 @@ export class EffectFactory {
             ttl
         );
         entity.update_callback = () => {
-            entity.alpha = 0.5 + (1 - entity.seconds_to_live / ttl) * 0.5;
+            entity.alpha = 0.1 + (1 - entity.seconds_to_live / ttl) * 0.5;
         }
         return entity;
     }
