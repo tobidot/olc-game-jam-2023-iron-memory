@@ -7,6 +7,7 @@ import { SatPhysicsProxy } from "../../library/physics/SatPhysicsEngine";
 import { Game } from "../base/Game";
 import { WorldMapAreaBorder } from "../consts/Direction";
 import { EnemyType } from "../consts/EnemyType";
+import { ViewName } from "../consts/ViewName";
 import { WeaponAchievement } from "../consts/WeaponAchievements";
 import { Agent } from "./Agent";
 import { AiAgent } from "./AiAgent";
@@ -23,6 +24,7 @@ export type AgentImageSet = Map<AgentImageName, ImageAsset>;
 
 export class Hero extends Agent {
     public weapon: Weapon;
+    public age: number = 16;
 
     public constructor(
         protected game: Game,
@@ -37,6 +39,22 @@ export class Hero extends Agent {
 
     public update(delta_seconds: number): void {
         super.update(delta_seconds);
+        this.movement_speed = this.age < 25
+            ? 250
+            : this.age < 60
+                ? 225
+                : this.age < 80
+                    ? 200
+                    : this.age < 90 ? 185 : 170;
+        if (this.game.model.active_view === ViewName.AREA) {
+            this.age += delta_seconds * 1.5;
+            if (this.age > 100) {
+                this.age = 100;
+                this.hitpoints = 0;
+                this.is_dead = true;
+                this.onDeath();
+            }
+        }
     }
 
     public onWorldCollision(distance: Vector2D): void {
@@ -139,10 +157,16 @@ export class Hero extends Agent {
     }
 
     public getHeavyAttackStruct(): AttackAttributes {
-        return this.weapon.modifyHeavyAttack(this.heavy_attack.cpy());
+        const attack = this.weapon.modifyHeavyAttack(this.heavy_attack.cpy());
+        attack.damage.physical *= this.age / 25;
+        // attack.cooldown_seconds += this.age / 100;
+        return attack;
     }
 
     public getLightAttackStruct(): AttackAttributes {
-        return this.weapon.modifyLightAttack(this.light_attack.cpy());
+        const attack = this.weapon.modifyLightAttack(this.light_attack.cpy());
+        attack.damage.physical *= this.age / 25;
+        // attack.cooldown_seconds += this.age / 100;
+        return attack;
     }
 }

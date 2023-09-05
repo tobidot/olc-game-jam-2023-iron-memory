@@ -35,24 +35,26 @@ export class InventoryView {
         this.context.textAlign = "left";
         this.context.font = "16px sans-serif";
         // 
-        this.context.fillText("Health: ", left_x, 80);
-        this.context.fillText("Movement Speed: ", left_x, 100);
-        this.context.fillText("Physical Resistance: ", left_x, 120);
-        this.context.fillText("Fire Resisitance: ", left_x, 140);
-        this.context.fillText("Ice Resistance: ", left_x, 160);
-        this.context.fillText("Psy Resisitance: ", left_x, 180);
+        this.context.fillText("Age: ", left_x, 80);
+        this.context.fillText("Health: ", left_x, 100);
+        this.context.fillText("Movement Speed: ", left_x, 120);
+        this.context.fillText("Physical Resistance: ", left_x, 140);
+        this.context.fillText("Fire Resisitance: ", left_x, 160);
+        this.context.fillText("Ice Resistance: ", left_x, 180);
+        this.context.fillText("Psy Resisitance: ", left_x, 200);
 
         this.context.textAlign = "right";
-        this.context.fillText(hero.hitpoints.toFixed(2) + " / " + hero.max_hitpoints.toFixed(2), right_x, 80);
-        this.context.fillText(hero.movement_speed.toString(), right_x, 100);
+        this.context.fillText(hero.age.toFixed(0), right_x, 80);
+        this.context.fillText(hero.hitpoints.toFixed(2) + " / " + hero.max_hitpoints.toFixed(2), right_x, 100);
+        this.context.fillText(hero.movement_speed.toString(), right_x, 120);
         this.context.fillStyle = "#fff";
-        this.context.fillText(hero.physical_resistance.toString(), right_x, 120);
+        this.context.fillText(hero.physical_resistance.toString(), right_x, 140);
         this.context.fillStyle = "red";
-        this.context.fillText(hero.fire_resistance.toString(), right_x, 140);
+        this.context.fillText(hero.fire_resistance.toString(), right_x, 160);
         this.context.fillStyle = "aqua";
-        this.context.fillText(hero.ice_resistance.toString(), right_x, 160);
+        this.context.fillText(hero.ice_resistance.toString(), right_x, 180);
         this.context.fillStyle = "hotpink";
-        this.context.fillText(hero.psy_resistance.toString(), right_x, 180);
+        this.context.fillText(hero.psy_resistance.toString(), right_x, 200);
         //
 
         const light_attack = hero.getLightAttackStruct();

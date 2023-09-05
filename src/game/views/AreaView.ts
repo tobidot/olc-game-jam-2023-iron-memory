@@ -33,8 +33,50 @@ export class AreaView {
     public render(model: GameModel): void {
         this.renderBackground(model);
         this.renderEntities(model);
+        this.renderAge(model);
         this.renderLatestAchievement(model);
         this.renderMapClear(model);
+    }
+
+    /**
+     * Show a bar that indicates the age of the hero
+     * The older the hero, the more red the bar gets until age 100
+     * @param model 
+     */
+    public renderAge(model: GameModel) {
+        const hero = model.walkable_area.hero;
+        if (!hero) {
+            return;
+        }
+        const age = hero.age;
+        const position = new Vector2D(0, 30);
+        const width = 800;
+        const height = 20;
+        const age_bar = Rect.fromLeftTopWidthHeight(
+            position.x,
+            position.y,
+            width * age / 100,
+            height
+        );
+        this.context.save();
+        const color = (() => {
+            if (age < 50) {
+                return "#0f0";
+            } else if (age < 75) {
+                return "#ff0";
+            } else {
+                return "#f00";
+            }
+        })();
+        this.context.fillStyle = color;
+        this.context.fillRect(
+            age_bar.left, age_bar.top,
+            age_bar.width, age_bar.height
+        );
+        this.context.fillStyle = "#000";
+        this.context.textAlign = "left";
+        this.context.fillText("Age: " + age.toFixed(0), position.x + 10, position.y + height / 2);
+        this.context.restore();
     }
 
     public renderBackground(model: GameModel) {
@@ -84,14 +126,30 @@ export class AreaView {
             return;
         }
         const text = description.label;
-        const position = new Vector2D(10, 600 - 10);
+        const position = new Vector2D(0, 50);
         this.context.save();
-        this.context.fillStyle = "#fff";
+        this.context.font = "24px Arial";
         this.context.textAlign = "left";
-        this.context.fillText(text, position.x, position.y);
+        // draw background rect
+        const width = this.context.measureText(text).width + 20;
+        const height = 30;
+        const rect = Rect.fromLeftTopWidthHeight(
+            position.x,
+            position.y,
+            width,
+            height
+        );
+        this.context.fillStyle = "#000";
+        this.context.fillRect(
+            rect.left, rect.top,
+            rect.width, rect.height
+        );
+        // 
+        this.context.fillStyle = "#fff";
+        this.context.fillText(text, position.x + 10, position.y + height / 2);
         this.context.restore();
     }
-    
+
     /**
      * Show a game won screen, as the map has been cleared
      * @param model 
@@ -109,7 +167,7 @@ export class AreaView {
         this.context.fillText("All bosses are dead!", position.x, position.y + 30);
         this.context.font = "18px Arial";
         this.context.fillText("You can start the next level via the menu now", position.x, position.y + 60);
-        this.context.restore();        
+        this.context.restore();
     }
 
     /**

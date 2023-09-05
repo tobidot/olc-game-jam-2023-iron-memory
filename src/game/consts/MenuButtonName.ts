@@ -33,7 +33,7 @@ export const main_menu_button_names = [
     MenuButtonName.LEVEL_CAMPAIGN_1,
     MenuButtonName.LEVEL_CAMPAIGN_2,
     MenuButtonName.LEVEL_CAMPAIGN_3,
-    MenuButtonName.LEVEL_CAMPAIGN_4,
+    // MenuButtonName.LEVEL_CAMPAIGN_4,
     MenuButtonName.LEVEL_RANDOM_SMALL,
     MenuButtonName.LEVEL_RANDOM_MEDIUM,
     MenuButtonName.LEVEL_RANDOM_LARGE,

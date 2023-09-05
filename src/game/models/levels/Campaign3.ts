@@ -18,39 +18,75 @@ function getDefinition(): WorldMapLevelDefinition {
     const S = WorldMapAreaBorder.SOUTH;
     const W = WorldMapAreaBorder.WEST;
     const E = WorldMapAreaBorder.EAST;
-    const enemy_pack_1 = [
+    // 
+    const G = WorldMapAreaType.GRAS;
+    const F = WorldMapAreaType.FORREST;
+    const D = WorldMapAreaType.DUNGEON;
+    const M = WorldMapAreaType.MOUNTAIN;
+    const V = WorldMapAreaType.VILLAGE;
+
+    const sign_dragon_boss = {
+        type: EnemyType.INFO,
+        info: [
+            "These lands are guarded \nby a mighty dragon",
+            "It is the strongest \nsingle enemy you will face",
+        ]
+    };
+
+    const village = [sign_dragon_boss];
+    const nothing = [];
+    const goblin_weak = [
         { type: EnemyType.GOBLIN, count: 1 },
     ];
-    const enemy_pack_2 = [
-        { type: EnemyType.GOBLIN, count: 4 },
+    const goblin_strong = [
+        { type: EnemyType.GOBLIN, count: 3 },
     ];
-    const enemy_pack_3 = [
-        { type: EnemyType.HOB_GOBLIN, count: 1 },
-        { type: EnemyType.GOBLIN, count: 2 },
+    const spider_strong = [
+        { type: EnemyType.SPIDER, count: 10 },
+    ];
+    const imp_weak = [
+        { type: EnemyType.IMP, count: 2 },
+    ];
+    const imp_medium = [
+        { type: EnemyType.IMP, count: 3 },
+        { type: EnemyType.GOBLIN, count: 1 },
+    ];
+    const imp_strong = [
+        { type: EnemyType.IMP, count: 3 },
+    ];
+    const goblin_guard = [
+        { type: EnemyType.GOBLIN, count: 7 },
+    ];
+    const potion = [
+        { type: EnemyType.GOBLIN, count: 3 },
+        { type: EnemyType.POTION, count: 2 },
+    ];
+    const boss_dragon = [
+        { type: EnemyType.DRAGON, count: 1 },
     ];
     return {
         size: new Vector2D(4, 4),
         start: new Vector2D(1, 1),
         areas: [
-            { type: WorldMapAreaType.GRAS, open_borders: N | E, entities: enemy_pack_1 },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.FORREST, open_borders: W, entities: enemy_pack_2 },
+            { type: G, open_borders: S | E, entities: goblin_weak },
+            { type: G, open_borders: W | E, entities: goblin_strong },
+            { type: G, open_borders: W | E, entities: goblin_weak },
+            { type: G, open_borders: W | S, entities: goblin_strong },
             //
-            { type: WorldMapAreaType.GRAS, open_borders: N | S | E, entities: enemy_pack_1 },
-            { type: WorldMapAreaType.VILLAGE, open_borders: W | E, entities: [], x: 1, y: 1, }, // start
-            { type: WorldMapAreaType.DUNGEON, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.DUNGEON, open_borders: W | S, entities: enemy_pack_2 },
+            { type: G, open_borders: N | E, entities: goblin_weak },
+            { type: V, open_borders: S | E | W, entities: village, x:1, y:1}, // start
+            { type: F, open_borders: S | W, entities: spider_strong },
+            { type: M, open_borders: S | N, entities: potion },
             //
-            { type: WorldMapAreaType.GRAS, open_borders: N | E, entities: enemy_pack_1 },
-            { type: WorldMapAreaType.DUNGEON, open_borders: E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.DUNGEON, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.DUNGEON, open_borders: N | W, entities: enemy_pack_3 },
+            { type: D, open_borders: S | E, entities: imp_medium},
+            { type: D, open_borders: N | W, entities: imp_weak  },
+            { type: M, open_borders: N | S | E, entities: potion, }, 
+            { type: M, open_borders: N | S | W, entities: goblin_guard },
             //
-            { type: WorldMapAreaType.GRAS, open_borders: N | E, entities: enemy_pack_1 },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.FORREST, open_borders: W | E, entities: enemy_pack_2 },
-            { type: WorldMapAreaType.FORREST, open_borders: W, entities: enemy_pack_2 },
+            { type: D, open_borders: N | E, entities: imp_strong },
+            { type: M, open_borders: W | E, entities: potion },
+            { type: M, open_borders: N | W | E, entities: goblin_guard },
+            { type: M, open_borders: N | W, entities: boss_dragon, boss: true },
         ]
     }
 }

@@ -1,7 +1,7 @@
 import { GameModel } from "../models/GameModel";
 import { ViewSettings } from "../../library/abstract/mvc/View";
 import { Vector2D } from "../../library/math";
-import { weapon_achievement_descriptions } from "../consts/WeaponAchievements";
+import { WeaponAchievement, weapon_achievement_descriptions } from "../consts/WeaponAchievements";
 import { AttackModifier } from "../models/AttackAttributes";
 
 export class AchievementView {
@@ -34,52 +34,67 @@ export class AchievementView {
         this.context.save();
         this.context.textAlign = "left";
         this.context.textBaseline = "top";
-        this.context.translate(0, -this.scroll_offset);        
-        weapon.achievement_progress.forEach((achievement, index) => {
-            if (achievement.achieved) {
-                const position = new Vector2D(400, 80 + offset);
-                const description = weapon_achievement_descriptions.get(index);
-                if (!description) {
-                    return;
+        this.context.translate(0, -this.scroll_offset);
+        [...weapon.achievement_progress.entries()]
+            .sort(([_a, a], [_b, b]) => (a.achieved_at ?? Infinity) - (b.achieved_at ?? Infinity))
+            .forEach(([achievement_type, progress]) => {
+                if (progress.achieved) {
+                    const position = new Vector2D(400, 80 + offset);
+                    const description = weapon_achievement_descriptions.get(achievement_type);
+                    if (!description) {
+                        return;
+                    }
+                    const modifier_light_text = !!description.light ? this.buildModifierText(description.light) : [];
+                    const modifier_heavy_text = !!description.heavy ? this.buildModifierText(description.heavy) : [];
+                    const height = Math.max(
+                        description.description.split("\n").length * 20,
+                        modifier_light_text.length * 20,
+                        modifier_heavy_text.length * 20,
+                    )
+                    const text = description.label + ": " + description.description;
+                    if ([
+                        WeaponAchievement.LICHS_CURSE,
+                        WeaponAchievement.LICHS_CURSE_5,
+                        WeaponAchievement.DRAGONS_CURSE,
+                        WeaponAchievement.DRAGONS_CURSE_5,
+                        WeaponAchievement.DEMONS_CURSE,
+                        WeaponAchievement.DEMONS_CURSE_5,
+                        WeaponAchievement.POSSESED,
+                        WeaponAchievement.LAZY,
+                    ].includes(achievement_type)) {
+                        this.context.fillStyle = "#70a";
+                    } else {
+                        this.context.fillStyle = "#f22";
+                    }
+                    this.context.fillRect(10, position.y - 5, 780, height + 10);
+                    // 
+                    this.context.textAlign = "left";
+                    this.context.fillStyle = "#fff";
+                    this.context.font = "24px Gothic";
+                    this.context.fillText(description.label, 20, position.y + height / 2 - 10);
+                    //
+                    this.context.textAlign = "left";
+                    this.context.fillStyle = "#fff";
+                    this.context.font = "16px Gothic";
+                    const description_lines = description.description.split("\n");
+                    description_lines.forEach((line, index) => {
+                        this.context.fillText(line, 175, position.y + index * 20);
+                    });
+                    //
+                    this.context.textAlign = "center";
+                    this.context.fillStyle = "#fff";
+                    modifier_light_text.forEach((line, index) => {
+                        this.context.fillText(line, 500 + 75, position.y + index * 20);
+                    });
+                    //
+                    this.context.textAlign = "center";
+                    this.context.fillStyle = "#fff";
+                    modifier_heavy_text.forEach((line, index) => {
+                        this.context.fillText(line, 650 + 75, position.y + index * 20);
+                    });
+                    offset += height + 20;
                 }
-                const modifier_light_text = !!description.light ? this.buildModifierText(description.light) : [];
-                const modifier_heavy_text = !!description.heavy ? this.buildModifierText(description.heavy) : [];
-                const height = Math.max(
-                    description.description.split("\n").length * 20,
-                    modifier_light_text.length * 20,
-                    modifier_heavy_text.length * 20,
-                )
-                const text = description.label + ": " + description.description;
-                this.context.fillStyle = "#f22";
-                this.context.fillRect(10, position.y - 5, 780, height + 10);
-                // 
-                this.context.textAlign = "left";
-                this.context.fillStyle = "#fff";
-                this.context.font = "24px Gothic";
-                this.context.fillText(description.label, 20, position.y + height / 2 - 10);
-                //
-                this.context.textAlign = "left";
-                this.context.fillStyle = "#fff";
-                this.context.font = "16px Gothic";
-                const description_lines = description.description.split("\n");
-                description_lines.forEach((line, index) => {
-                    this.context.fillText(line, 175, position.y + index * 20);
-                });
-                //
-                this.context.textAlign = "center";
-                this.context.fillStyle = "#fff";
-                modifier_light_text.forEach((line, index) => {
-                    this.context.fillText(line, 500 + 75, position.y + index * 20);
-                });
-                //
-                this.context.textAlign = "center";
-                this.context.fillStyle = "#fff";
-                modifier_heavy_text.forEach((line, index) => {
-                    this.context.fillText(line, 650 + 75, position.y + index * 20);
-                });
-                offset += height + 20;
-            }
-        });
+            });
         this.context.restore();
 
 

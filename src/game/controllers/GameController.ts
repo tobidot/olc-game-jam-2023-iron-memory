@@ -10,9 +10,11 @@ import { MenuButtonName } from "../consts/MenuButtonName";
 import { ViewName } from "../consts/ViewName";
 import { WeaponAchievement } from "../consts/WeaponAchievements";
 import { Agent } from "../models/Agent";
+import { AiAgent } from "../models/AiAgent";
 import { AttackAttributes } from "../models/AttackAttributes";
 import { AttackDamage } from "../models/AttackDamage";
 import { Hero } from "../models/Hero";
+import { Potion } from "../models/Potion";
 import { Weapon } from "../models/Weapon";
 import { WorldMapArea } from "../models/WorldMap";
 import { loadCampaign1 } from "../models/levels/Campaign1";
@@ -277,7 +279,14 @@ export class GameController extends BaseController {
             const attack_shape = this.getAttackShape(source, direction);
             const enemies = this.game.model.walkable_area.physics.pickOverlapping(attack_shape)
                 .map((proxy) => proxy.reference)
-                .filter((entity): entity is Agent => entity instanceof Agent && (entity.is_player !== agent.is_player || entity.is_neutral));
+                .filter((entity): entity is Agent => 
+                    entity instanceof Agent 
+                    && !entity.is_dead
+                    // all can attack neutral or enemies
+                    && (entity.is_player !== agent.is_player || entity.is_neutral)
+                    // enemies cant attack potions 
+                    && !(source instanceof AiAgent && (entity instanceof Potion))
+                );
 
             enemies.forEach((enemy) => {
                 enemy.applyDamage(damage);
@@ -287,14 +296,15 @@ export class GameController extends BaseController {
             });
 
             if (source instanceof Hero) {
-                if (enemies.length >= 2) {
+                const killed = enemies.filter((enemy) => enemy.is_dead);
+                if (killed.length >= 2) {
                     source.weapon.increase(WeaponAchievement.FIRST_DOUBLE_KILL, 1);
                     source.weapon.increase(WeaponAchievement.FIRST_5_DOUBLE_KILL, 1);
                     source.weapon.increase(WeaponAchievement.FIRST_10_DOUBLE_KILL, 1);
                     source.weapon.increase(WeaponAchievement.FIRST_50_DOUBLE_KILL, 1);
                     source.weapon.increase(WeaponAchievement.FIRST_100_DOUBLE_KILL, 1);
                 }
-                if (enemies.length >= 5) {
+                if (killed.length >= 5) {
                     source.weapon.increase(WeaponAchievement.FIRST_PENTA_KILL, 1);
                     source.weapon.increase(WeaponAchievement.FIRST_5_PENTA_KILL, 1);
                     source.weapon.increase(WeaponAchievement.FIRST_10_PENTA_KILL, 1);

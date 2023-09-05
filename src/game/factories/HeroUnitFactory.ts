@@ -37,7 +37,7 @@ export class HeroUnitFactory {
         );
         entity.heavy_attack =  new AttackAttributes(
             new AttackDamage(entity, 12, 0, 0, 0),
-            96, 96, 0.5, 0.5
+            96, 96, 0.5, 0.75
         );
         return entity;
     }

@@ -63,7 +63,7 @@ export class CreepUnitFactory {
         entity.ice_resistance = 0;
         entity.psy_resistance = 1;
         entity.light_attack = new AttackAttributes(
-            new AttackDamage(entity, 3, 0, 0, 0),
+            new AttackDamage(entity, 2, 0, 0, 0),
             48, 48, 0.3, 0
         );
         // jump to player
@@ -111,7 +111,7 @@ export class CreepUnitFactory {
         );
         entity.heavy_attack = new AttackAttributes(
             new AttackDamage(entity, 4, 0, 2, 0),
-            72, 48, 0.25, 0.25,
+            72, 48, 0.25, 0.5,
         );
         return entity;
     }
@@ -129,10 +129,10 @@ export class CreepUnitFactory {
             ["light", "light", "heavy", "s1"],
         );
         entity.seconds_between_auto_attacks = 1;
-        entity.max_hitpoints = entity.hitpoints = 45;
+        entity.max_hitpoints = entity.hitpoints = 90;
         entity.physical_resistance = 20;
-        entity.fire_resistance = 3;
-        entity.ice_resistance = 3;
+        entity.fire_resistance = 5;
+        entity.ice_resistance = 5;
         entity.psy_resistance = 0;
         entity.movement_speed = 110;
         entity.light_attack = new AttackAttributes(
@@ -141,7 +141,7 @@ export class CreepUnitFactory {
         );
         entity.heavy_attack = new AttackAttributes(
             new AttackDamage(entity, 25, 0, 0, 0),
-            160, 160, 0.5, 1,
+            160, 160, 0.5, 1.5,
         );
         // spawn a goblin 
         entity.special_attack_1 = new AttackAttributes(
@@ -166,41 +166,22 @@ export class CreepUnitFactory {
             EnemyType.ORC,
             shape,
             this.getImageSet('orc'),
-            ["light", "heavy", "heavy", "s1", "light", "heavy", "s1"],
+            ["light", "heavy", "heavy", "light", "heavy"],
         );
         entity.seconds_between_auto_attacks = 1;
-        entity.max_hitpoints = entity.hitpoints = 35;
-        entity.physical_resistance = 15;
+        entity.max_hitpoints = entity.hitpoints = 70;
+        entity.physical_resistance = 25;
         entity.fire_resistance = 0;
         entity.ice_resistance = 0;
         entity.psy_resistance = 0;
         entity.movement_speed = 130;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 8, 0, 0, 0),
-            90, 140, 0.3, 0.1
+            90, 140, 0.3, 0.3
         );
         entity.heavy_attack = new AttackAttributes(
             new AttackDamage(entity, 12, 0, 0, 0),
-            140, 90, 0.5, 0.2,
-        );
-        // war cry to stun player
-        entity.special_attack_1 = new AttackAttributes(
-            new AttackDamage(entity, 0, 0, 0, 0),
-            0, 0, 0.5, 0.2,
-            (attack) => {
-                const player = this.game.model.walkable_area.hero;
-                if (!player) {
-                    return;
-                }
-                if (!player.channel) {
-                    player.channel = {
-                        delay_seconds: 1.0,
-                        callback: (player) => {
-                            player.channel = null;
-                        },
-                    };
-                };
-            },
+            140, 90, 0.5, 0.85,
         );
         return entity;
     }
@@ -219,17 +200,19 @@ export class CreepUnitFactory {
             ["light", "light", "light", "s1", "light", "light", "s1"],
         );
         entity.seconds_between_auto_attacks = 1;
-        entity.max_hitpoints = entity.hitpoints = 45;
-        entity.physical_resistance = 2;
-        entity.fire_resistance = 2;
+        entity.max_hitpoints = entity.hitpoints = 90;
+        entity.physical_resistance = 10;
+        entity.fire_resistance = 10;
+        entity.ice_resistance = 2;
+        entity.psy_resistance = 0;
         entity.movement_speed = 100;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 6, 0, 0, 0),
-            32, 220, 0.4, 0.1
+            32, 220, 0.4, 0.3
         );
         entity.heavy_attack = new AttackAttributes(
             new AttackDamage(entity, 12, 0, 0, 0),
-            140, 90, 0.5, 0.2,
+            140, 90, 0.5, 0.9,
         );
         // stop to regen health
         entity.special_attack_1 = new AttackAttributes(
@@ -256,19 +239,19 @@ export class CreepUnitFactory {
             ["light", "light", "light", "heavy", "s1"],
         );
         entity.seconds_between_auto_attacks = 2;
-        entity.max_hitpoints = entity.hitpoints = 150;
-        entity.physical_resistance = 12;
-        entity.ice_resistance = 0;
-        entity.psy_resistance = 0;
-        entity.fire_resistance = 20;
+        entity.max_hitpoints = entity.hitpoints = 250;
+        entity.physical_resistance = 50;
+        entity.ice_resistance = 5;
+        entity.psy_resistance = 4;
+        entity.fire_resistance = 100;
         entity.movement_speed = 80;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 16, 0, 16, 0),
-            128, 128, 1.0, 0.3
+            128, 128, 1.0, 1.2
         );
         entity.heavy_attack = new AttackAttributes(
             new AttackDamage(entity, 12, 0, 0, 0),
-            256, 256, 1.0, 2.0,
+            256, 256, 1.0, 2.5,
         );
         // debuff player 
         entity.special_attack_1 = new AttackAttributes(
@@ -301,11 +284,11 @@ export class CreepUnitFactory {
             ["light", "s1", "light", "s2", "light", "s1", "heavy",],
         );
         entity.seconds_between_auto_attacks = 0.5;
-        entity.max_hitpoints = entity.hitpoints = 80;
-        entity.physical_resistance = 20;
-        entity.ice_resistance = 0;
-        entity.psy_resistance = 20;
-        entity.fire_resistance = 20;
+        entity.max_hitpoints = entity.hitpoints = 160;
+        entity.physical_resistance = 30;
+        entity.ice_resistance = 2;
+        entity.psy_resistance = 30;
+        entity.fire_resistance = 40;
         entity.movement_speed = 120;
         entity.light_attack = new AttackAttributes(
             new AttackDamage(entity, 0, 8, 8, 0),
@@ -313,24 +296,12 @@ export class CreepUnitFactory {
         );
         entity.heavy_attack = new AttackAttributes(
             new AttackDamage(entity, 0, 16, 0, 0),
-            100, 312, 1.0, 0.8,
-        );
-        // debuff player 
-        entity.special_attack_1 = new AttackAttributes(
-            new AttackDamage(entity, 0, 5, 0, 0),
-            0, 0, 0.5, 0.5,
-            (attack) => {
-                const player = this.game.model.walkable_area.hero;
-                if (!player) {
-                    return;
-                }
-                // progress achievement to corrosive the sword damage
-            },
+            100, 312, 1.0, 1.2,
         );
         // spawn imps
-        entity.special_attack_2 = new AttackAttributes(
+        entity.special_attack_1 = new AttackAttributes(
             new AttackDamage(entity, 0, 5, 0, 0),
-            0, 0, 0.5, 0.75,
+            0, 0, 1.0, 0.75,
             (attack) => {
                 const position = entity.physics.shape.getCenter().cpy().add(new Vector2D(0, 50));
                 for (let i = 0; i < 2; i++) {
@@ -341,9 +312,9 @@ export class CreepUnitFactory {
             },
         );
         // demon curse  
-        entity.special_attack_3 = new AttackAttributes(
+        entity.special_attack_2 = new AttackAttributes(
             new AttackDamage(entity, 0, 0, 42, 0),
-            512, 80, 0.75, 1.5,
+            512, 80, 0.75, 0.5,
             (attack) => {
                 const player = this.game.model.walkable_area.hero;
                 if (!player) {
@@ -370,9 +341,9 @@ export class CreepUnitFactory {
             ["light", "s1", "s1", "light", "s2", "s3"],
         );
         entity.seconds_between_auto_attacks = 0.5;
-        entity.max_hitpoints = entity.hitpoints = 60;
-        entity.physical_resistance = 30;
-        entity.ice_resistance = 15;
+        entity.max_hitpoints = entity.hitpoints = 120;
+        entity.physical_resistance = 25;
+        entity.ice_resistance = 25;
         entity.psy_resistance = 10;
         entity.fire_resistance = 10;
         entity.movement_speed = 40;
@@ -383,7 +354,7 @@ export class CreepUnitFactory {
         // spwan imp
         entity.special_attack_1 = new AttackAttributes(
             new AttackDamage(entity, 0, 0, 0, 0),
-            0, 0, 0.25, 0.25,
+            0, 0, 0.25, 0.85,
             (attack) => {
                 const position = entity.physics.shape.getCenter().cpy().add(new Vector2D(0, 50));
                 for (let i = 0; i < 2; i++) {
@@ -395,7 +366,7 @@ export class CreepUnitFactory {
         // spawn spider
         entity.special_attack_2 = new AttackAttributes(
             new AttackDamage(entity, 0, 5, 0, 0),
-            0, 0, 0.5, 0.75,
+            0, 0, 0.5, 1.0,
             (attack) => {
                 const position = entity.physics.shape.getCenter().cpy().add(new Vector2D(0, 50));
                 for (let i = 0; i < 2; i++) {
