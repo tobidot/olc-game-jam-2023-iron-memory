@@ -52,7 +52,7 @@ export class WorldMap {
                 return;
             }
             area.entities.forEach((entity) => {
-                if (entity instanceof Agent) {
+                if (entity instanceof Agent && !(entity instanceof Weapon)) {
                     entity.is_dead = false;
                     entity.hitpoints = entity.max_hitpoints;
                     if (!entity.is_neutral) {

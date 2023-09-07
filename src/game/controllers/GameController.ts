@@ -324,6 +324,7 @@ export class GameController extends BaseController {
         if (player.channel !== null) {
             return ;
         }
+        
         const old_weapon = player.weapon;
         old_weapon.hero = null;
         const walkable_area = this.game.model.walkable_area;
@@ -348,7 +349,7 @@ export class GameController extends BaseController {
             this.game.model.world_map.active_area_coordinate.x,
             this.game.model.world_map.active_area_coordinate.y
         );
-        current_area.entities = current_area.entities.filter((e)=>e.id = new_weapon.id);
+        current_area.entities = current_area.entities.filter((e)=>e.id !== new_weapon.id);
         current_area.entities.push(old_weapon);
         //
         old_weapon.physics.shape.setCenter(new_weapon.physics.shape.getCenter().cpy());
@@ -357,7 +358,7 @@ export class GameController extends BaseController {
         player.channel = {
             delay_seconds: 1.5,
             callback: (agent) => {
-                agent.channel = null;
+                agent.channel = null; 
             }
         }
         // 

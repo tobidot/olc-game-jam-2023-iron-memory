@@ -44,7 +44,9 @@ export class WalkableArea {
      * @param entity 
      */
     public removeEntity(entity: Entity) {
+        console.log(`Removing entity#${entity.id}`);
         if ('physics_id' in entity && typeof entity.physics_id === "number") {
+            console.log(`Removing entity#${entity.physics_id}`);
             this.physics.remove(entity.physics_id);
         }
         this.entities = this.entities.filter(e => e.id !== entity.id);
